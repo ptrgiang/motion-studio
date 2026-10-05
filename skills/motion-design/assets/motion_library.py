@@ -39,8 +39,9 @@ def render(frame,spec,format_id,recipe,variant='intentional'):
     elif recipe=='mask-reveal':
         layer=im.copy();ld=ImageDraw.Draw(layer)
         ld.text((cx,cy),'REVEAL',font=font(unit*.13),fill=FG,anchor='mm')
-        p=ease(progress(f,8,48)); x=l+cw*p
-        if bad:x=l+cw*.38*p
+        p=ease(progress(f,8,48)); bounds=ld.textbbox((cx,cy),'REVEAL',font=font(unit*.13),anchor='mm')
+        x=bounds[0]+(bounds[2]-bounds[0])*p
+        if bad:x=bounds[0]+(bounds[2]-bounds[0])*.38*p
         mask=Image.new('L',(w,h));md=ImageDraw.Draw(mask);md.rectangle((l,t,x,b),fill=255)
         im.paste(layer,(0,0),mask);d=ImageDraw.Draw(im)
         d.line((x,cy-unit*.12,x,cy+unit*.12),fill=ACCENT,width=max(2,round(unit*.006)))

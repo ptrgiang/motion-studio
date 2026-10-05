@@ -19,6 +19,6 @@ Run https://github.com/ptrgiang/motion-studio/actions/runs/37299324016 completed
 
 ## v1.2 local verification (2026-10-05)
 
-Six new recipes and twelve blind controls were rendered through Pillow/FFmpeg in wide and vertical: 24 silent four-second films. Exact frame counts, durations, dimensions, H.264 decode and seek checks passed. Representative final layouts were inspected; a mask compositing fix retains the header/footer. The new benchmark report correctly leaves all twelve cases pending without recorded reviews. No aesthetic aggregate or full-playback approval is claimed.
+Six new recipes and twelve blind controls were rendered through Pillow/FFmpeg in wide and vertical: 24 silent four-second films. Exact frame counts, durations, dimensions, H.264 decode and seek checks passed. Representative final layouts were inspected; forward usage identified mask/annotation compositing and extra edge travel; fixes retain the header/footer and align travel to headline bounds. The new benchmark report correctly leaves all twelve cases pending without recorded reviews. No aesthetic aggregate or full-playback approval is claimed.
 
 New unit checks exercise every recipe and variant, both formats, seek order, blind manifests, stale media, exact still-frame evidence, score types and unobserved playback gating. CI adds a full 24-film calibration job alongside existing Windows/Linux regression and Chromium audio checks. See the repository workflow for current results; this document does not predeclare CI success for v1.2.
