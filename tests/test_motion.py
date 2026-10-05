@@ -50,7 +50,7 @@ class StudioTests(unittest.TestCase):
         voice=copy.deepcopy(cue);voice.update(id='voice',role='voice');self.spec['audio_cues'].append(voice);write(self.root/'spec.json',self.spec)
         path,report=mix(self.root,self.root/'mix');self.assertTrue(report['voice_ducking']);self.assertTrue(report['loudness_pass'])
         with wave.open(str(path.parent/'mix-raw.wav'),'rb') as wav:
-            self.assertEqual(wav.getframerate(),48000);self.assertEqual(wav.getnchannels(),2)
+            self.assertEqual(wav.getframerate(),48000);self.assertEqual(wav.getnchannels(),2);self.assertEqual(wav.getnframes(),288000)
             first=wav.readframes(47000);self.assertLessEqual(max(abs(int.from_bytes(first[i:i+3],'little',signed=True)) for i in range(0,len(first),3)),2)
             later=wav.readframes(9600);self.assertGreater(max(abs(int.from_bytes(later[i:i+3],'little',signed=True)) for i in range(0,len(later),3)),100)
     def test_odd_dimensions_rejected(self):
