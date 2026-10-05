@@ -12,3 +12,6 @@ Canvas now awaits motionReady and uses SHA-256 decoded RGBA digests. Node syntax
 
 ## Pending perceptual checks
 No full-video playback or audio listening was observed in authoring. The runner deliberately emits technical_pass_review_pending and final=false. Future productions must review actual motion, sound, readability and truthful claims against the exported film/spec hashes. No actual Opus model production session was run here.
+
+## Confirmed GitHub Actions evidence
+Run https://github.com/ptrgiang/motion-studio/actions/runs/37299324016 completed successfully for code commit 3eac78435485c7f9fa2caaae06cd6f702540910f. Windows regression, Ubuntu regression/full Pillow integration, and Chromium two-format rendering jobs all passed. The Canvas artifact was downloaded and checked: wide and vertical each have 180 captured frames, 180 passing reverse-seek SHA-256 checks, a passing direct/sequential check, technical encode/decode QC, and encoded audio measured -16.06 LUFS / -9.43 dBTP. Both Canvas poster frames were inspected for layout/readability. Full video playback/listening remain pending; CI success is technical evidence, not creative approval.
