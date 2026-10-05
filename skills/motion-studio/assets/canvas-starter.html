@@ -1,29 +1,30 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Deterministic motion test</title>
+<!doctype html><html><head><meta charset="utf-8"><title>Original motion study</title>
 <style>html,body{margin:0;background:#eee}canvas{display:block}</style></head><body><canvas id="film"></canvas>
 <script>
-// Generic renderer demonstration. Replace artwork using the approved brief.
+// Generic procedural graphic renderer. Replace artwork for a client brief.
 const canvas=document.getElementById('film'),ctx=canvas.getContext('2d');
 const clamp=x=>Math.max(0,Math.min(1,x));const ease=x=>1-Math.pow(1-clamp(x),3);
 window.renderFrame=async function(frame,spec,formatId){
  const fmt=spec.formats.find(x=>x.id===formatId);if(!fmt)throw Error('Unknown format');
  if(!Number.isInteger(frame)||frame<0||frame>=spec.duration_frames)throw Error('Frame outside timeline');
  canvas.width=fmt.width;canvas.height=fmt.height;
- const w=fmt.width,h=fmt.height,t=frame/spec.fps,u=ease(t/.8),vertical=h>w;
+ const w=fmt.width,h=fmt.height,size=Math.min(w,h),vertical=h>w,margin=Math.max(fmt.safe.left,fmt.safe.right);
+ const shots=spec.shots?.length?spec.shots:[{start:0,end:spec.duration_frames,copy:'Frame, not clock.'}];
+ const shot=shots.find(s=>s.start<=frame&&frame<s.end);if(!shot)throw Error('Shot coverage missing');
+ const index=shots.indexOf(shot),enter=ease((frame-shot.start)/Math.max(1,Math.round(spec.fps*.35))),shapeEnter=index===0?enter:1;
  ctx.fillStyle='#ebe7df';ctx.fillRect(0,0,w,h);
- const margin=Math.max(fmt.safe.left,fmt.safe.right,w*.09),size=Math.min(w,h)*.2;
- // Different explicit hierarchy and path for the two aspect ratios.
- const px=vertical?w*.5:margin+size*.5,py=vertical?h*.4:h*.5;
- ctx.save();ctx.translate(px,py+(1-u)*h*.12);ctx.rotate((1-u)*-.22);
- ctx.fillStyle='#d65a36';ctx.fillRect(-size/2,-size/2,size,size);ctx.restore();
- const tx=vertical?w*.5:margin+size*1.4,ty=vertical?h*.62:h*.46;
- ctx.fillStyle='#242722';ctx.textAlign=vertical?'center':'left';ctx.textBaseline='middle';
- ctx.font=`700 ${Math.round(Math.min(w,h)*.055)}px sans-serif`;ctx.globalAlpha=u;
- ctx.fillText('FRAME, NOT CLOCK',tx,ty);
- ctx.font=`400 ${Math.round(Math.min(w,h)*.025)}px sans-serif`;ctx.fillText('Generic renderer test',tx,ty+Math.min(w,h)*.085);ctx.globalAlpha=1;
- // A seeded stable decorative detail, independent of seek order.
- const seed=Number(spec.seed)>>>0;ctx.fillStyle='#242722';ctx.beginPath();ctx.arc(w-margin,h-fmt.safe.bottom-20,6+seed%8,0,Math.PI*2);ctx.fill();
- return true;
+ const centerX=vertical?w*.5:w*.28,centerY=(vertical?h*.32:h*.5)+(1-shapeEnter)*size*.12,radius=size*.085;
+ const xs=[-1,0,1].map(n=>centerX+n*radius*2.7);
+ if(index>=1){ctx.strokeStyle='#242722';ctx.lineWidth=Math.max(2,Math.round(size*.008));for(let j=0;j<2;j++){ctx.beginPath();ctx.moveTo(xs[j],centerY);ctx.lineTo(index===1?xs[j]+(xs[j+1]-xs[j])*enter:xs[j+1],centerY);ctx.stroke();}}
+ xs.forEach((x,j)=>{ctx.fillStyle=j===index%3?'#d65a36':'#242722';ctx.beginPath();ctx.arc(x,centerY,radius*(.6+.4*shapeEnter),0,Math.PI*2);ctx.fill();});
+ ctx.fillStyle='#242722';ctx.font=`400 ${Math.round(size*.07)}px sans-serif`;ctx.textAlign=vertical?'center':'left';ctx.textBaseline='top';
+ const maxwidth=vertical?w-margin*2:w*.38,lines=[];let line='';
+ for(const word of shot.copy.split(/\s+/)){const candidate=(line+' '+word).trim();if(line&&ctx.measureText(candidate).width>maxwidth){lines.push(line);line=word;}else line=candidate;}if(line)lines.push(line);
+ lines.forEach((text,j)=>ctx.fillText(text,vertical?w*.5:w*.56,(vertical?h*.6:h*.4)+j*size*.09+(1-enter)*size*.04));
+ ctx.textAlign='left';ctx.font=`400 ${Math.max(12,Math.round(size*.024))}px sans-serif`;ctx.fillText('MOTION STUDY / ORIGINAL GRAPHICS',fmt.safe.left,fmt.safe.top);
+ const baseline=h-fmt.safe.bottom;ctx.lineWidth=2;ctx.strokeStyle='#b7b4ab';ctx.beginPath();ctx.moveTo(margin,baseline);ctx.lineTo(w-margin,baseline);ctx.stroke();
+ ctx.lineWidth=3;ctx.strokeStyle='#d65a36';ctx.beginPath();ctx.moveTo(margin,baseline);ctx.lineTo(margin+(w-margin*2)*(frame+1)/spec.duration_frames,baseline);ctx.stroke();return true;
 };
-window.frameHash=()=>{const b=ctx.getImageData(0,0,canvas.width,canvas.height).data;let h=2166136261;for(let i=0;i<b.length;i++)h=Math.imul(h^b[i],16777619);return(h>>>0).toString(16)};
-window.preview=async function(){await document.fonts.ready;await window.renderFrame(30,{fps:30,duration_frames:60,seed:42,formats:[{id:'wide',width:960,height:540,safe:{top:36,right:48,bottom:36,left:48}}]},'wide')};window.preview();
+window.frameDigest=async()=>{const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;const bytes=await crypto.subtle.digest('SHA-256',pixels);return [...new Uint8Array(bytes)].map(b=>b.toString(16).padStart(2,'0')).join('')};
+window.preview=async()=>{await document.fonts.ready;await window.renderFrame(30,{fps:30,duration_frames:60,seed:42,formats:[{id:'wide',width:960,height:540,safe:{top:36,right:48,bottom:48,left:48}}]},'wide')};window.motionReady=window.preview();
 </script></body></html>

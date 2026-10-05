@@ -1,12 +1,14 @@
-# Authoring validation (2026-10-05)
+# Validation scope — v1.1.0 (2026-10-05)
 
-Passed: frontmatter/basic validation for seven skills; production initialization; a valid two-format spec; seven rejected malformed cases (fps boolean, timeline gap, short coverage, unknown asset, missing format layout, empty safe area, invalid transition); frame sampling; seven-skill Claude export and overwrite refusal; contact sheets from stills and exact decoded video frames, inspected wide/vertical sheets; an FFmpeg fixture encoded as 60 frames, 30fps, 960x540, 2 seconds.
+## Passed locally
+26 regression/integration tests: canonical audio mode/timeline, cue/asset provenance, malformed fps/version, gaps/coverage, layouts, safe area, Unicode, path traversal, short source trim, mixer placement and voice ducking, measured loudness, repeated/shuffled/sequential Pillow pixels, odd yuv420p dimensions, installer diff/backup/legacy refusal/local-edit protection, full two-format Pillow render and silent render.
 
-Passed with limited scope: Canvas frame function executes under a mocked drawing context and repeats identical draw operations after shuffled seeks in both formats; frame bounds and unknown formats reject correctly. render.mjs passes Node syntax check.
+The original six-second sample rendered as 180 frames at 30fps, 960x540 and 540x960, with H.264/yuv420p video and 48kHz stereo AAC audio. Both exports passed ffprobe comparisons and full decode. Lossless mix measured -16.07 LUFS / -9.43 dBTP; encoded audio measured -16.06 LUFS / -9.43 dBTP. These are actual observations for the sample, not requirements for every future film. SHA-256 seek checks operate within one runtime; they do not assert pixel equivalence across OS/fonts.
 
-Not verified: real Chromium capture, actual Canvas pixel determinism and the complete Playwright-to-video pipeline. Chromium was absent and its download failed in the authoring environment. The FFmpeg fixture was generated separately for tool testing, not by the Canvas starter. Do not report this as an end-to-end browser rendering pass.
+A fresh agent used the documented workflow to generate both formats, inspected contact sheets and phone posters, and correctly left full playback/listening pending. A node-size reset identified in sample stills was removed; the updated frame function passed the targeted deterministic seek test. The sample is original procedural artwork, not a client film or evidence of professional equivalence.
 
-No actual Opus session or production client film was run. No artistic quality, audio mix/listening, platform performance or professional equivalence is certified by these tests. Re-run actual render and perceptual checks on a capable production machine before final delivery.
+## Separate Canvas status
+Canvas now awaits motionReady and uses SHA-256 decoded RGBA digests. Node syntax checks passed. Chromium remains absent in the local authoring environment; its earlier download failed. GitHub Actions defines a real Chromium two-format pipeline job with original audio and retained evidence. Read the current workflow result before claiming this engine's end-to-end check passed. Pillow success does not imply Canvas success.
 
-## Independent pre-production exercise
-A fresh task used this pack for a 16-second accounting-app launch requesting real UI but supplying none. It produced provisional brief/story/layout records and explicitly labelled schematic animatics, without inventing UI, metrics, logo or product facts. Required identity/capture assets remained missing; validation reported ten asset-related errors with no timing/layout/schema errors. G1/G2 remained blocked and later gates pending. Optional missing music/reference did not prevent concept work; silence was documented. This confirms missing-input behavior for that scenario, not final-film artistic quality.
+## Pending perceptual checks
+No full-video playback or audio listening was observed in authoring. The runner deliberately emits technical_pass_review_pending and final=false. Future productions must review actual motion, sound, readability and truthful claims against the exported film/spec hashes. No actual Opus model production session was run here.

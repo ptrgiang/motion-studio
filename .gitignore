@@ -6,3 +6,7 @@ node_modules/
 .env.*
 !.env.example
 .DS_Store
+
+ci-demo/
+.motion-studio-install.json
+motion-studio-backup-*/

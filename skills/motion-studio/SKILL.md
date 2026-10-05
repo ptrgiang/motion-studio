@@ -28,18 +28,23 @@ Treat gates as documented internal checks in autonomous mode; show useful eviden
 ## Production rules
 - Use exact product UI/screens, approved logo and sourced metrics. If unavailable, omit unsupported claims or label a temporary placeholder and report the blocker; do not deliver a plausible fake.
 - Maintain one canonical spec with integer frame ranges `[start,end)`, one fps and explicit audio cues. Use seconds for human notes only. Validate with `studio.py validate <project>`.
-- Choose the smallest renderer that handles the actual film. Canvas suits graphic pieces; Remotion suits reusable React/UI/media scenes; use another engine only after checking its real CLI/API. Do not assume tools mentioned in an article are installed.
+- Choose the smallest renderer that handles the actual film. Pillow suits procedural 2D graphic pieces; Canvas suits browser graphics; Remotion suits reusable React/UI/media scenes; use another engine only after checking its real CLI/API. Do not assume tools mentioned in an article are installed.
 - Make stills at each beat, plus consecutive frames around fast transitions. A contact sheet cannot prove temporal quality or sound. Watch the rough cut and listen at least once; report any inspection capability that was unavailable.
 - Follow [quality-contract.md](references/quality-contract.md). Repair factual errors, readability and continuity before ornament. Limit ordinary aesthetic repair to three cycles; unresolved blockers remain blockers, never silently downgrade to final.
 - Design each aspect ratio with explicit layout overrides, not a center crop. Reuse story and assets; adjust pacing only when justified and update spec.
 - Save checkpoints after each gate: completed artifacts, observations, defects, next action. Invalidate downstream evidence when upstream copy, fps, asset, style or timing changes.
 - Deliver editable source, exact dependency versions/lockfile, reproducible commands, asset provenance, final videos, poster, per-format reviews and remaining limitations. Separate requested drafts from verified finals.
 
+## Executable pipeline (v1.1)
+Read [pipeline.md](references/pipeline.md) before execution. Use `doctor.py` to check the chosen engine. `pipeline.py demo <new-project>` creates original procedural sample inputs; `pipeline.py run <project> --engine pillow|canvas --run-id <version>` validates, mixes audio, renders each layout, encodes, verifies, and produces review evidence. Use sample art only to test the toolchain. Customize the project's composition for a real brief.
+
+Treat `technical_pass_review_pending` as a rendered draft. Inspect actual contact sheets, phone posters, transition clips and full film, listen to required audio, and record defects before marking any creative gate passed. Canonical audio mode and cues live only in spec.json; reject a second audio-cues.json.
+
 ## Bundled tools
 - `studio.py init/validate/samples`: create production documents, check spec/assets, select beat/transition review frames. See `--help`.
 - `contact_sheet.py`: assemble timestamped stills or extract selected frames from a local video; requires Pillow and FFmpeg for video input. Inspect the resulting image.
-- `export_claude.py --destination <project>/.claude/skills`: discover this seven-skill set by frontmatter name and copy it into Claude Code. Refuse existing destinations; do not overwrite local skills. Export is not installation into the user's other account.
-- `assets/canvas-starter.html` and `assets/render.mjs`: copy into a project as a minimal deterministic renderer. Read [renderer-recipes.md](references/renderer-recipes.md). The sample is a generic graphic, never a finished product film.
+- `export_claude.py --destination <project>/.claude/skills`: install by frontmatter name; inspect `--update --dry-run` before upgrading. Updates require a saved baseline, protect local edits and create a backup. Preserve earlier installations manually when they have no baseline. Export is not installation into the user's other account.
+- `assets/pillow_composition.py`, `assets/canvas-starter.html` and `assets/render.mjs`: copy into a project as a minimal deterministic renderer. Read [renderer-recipes.md](references/renderer-recipes.md). The sample is a generic graphic, never a finished product film.
 
 ## Validation
 Read [validation-status.md](references/validation-status.md) before claiming that bundled rendering was tested end to end. Re-run missing production checks in the target environment.

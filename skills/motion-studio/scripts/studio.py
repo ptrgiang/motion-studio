@@ -13,11 +13,11 @@ def init(root):
     root.mkdir(parents=True, exist_ok=True)
     for d in ('assets','src','reviews','out'): (root/d).mkdir()
     for name, title in [('brief','Brief'),('reference-analysis','Reference analysis'),('style-guide','Style guide'),('shotlist','Shot list'),('audio-plan','Audio plan')]:
-        (root/f'{name}.md').write_text(f'# {title}\n\nDraft: populate from observed inputs before passing the relevant gate.\n')
+        (root/f'{name}.md').write_text(f'# {title}\n\nDraft: populate from observed inputs before passing the relevant gate.\n', encoding='utf-8')
     save(root/'assets.json', {'assets':[]})
     save(root/'spec.json', {'version':1,'fps':30,'duration_frames':450,'seed':42,
         'formats':[{'id':'wide','width':1920,'height':1080,'safe':{'top':72,'right':96,'bottom':72,'left':96}}],
-        'shots':[], 'audio_cues':[]})
+        'shots':[], 'audio_mode':'silent', 'audio_cues':[]})
     save(root/'status.json', {'autonomy':'autonomous','status':'draft','gates':{f'G{i}':{'state':'pending','evidence':[]} for i in range(1,7)},'next_action':'Complete the director brief and asset provenance.'})
     print(f'Initialized {root.resolve()} (draft)')
 
@@ -30,9 +30,9 @@ def local(root,path):
 
 def validate(root):
     root=Path(root); errors=[]
-    spec=json.loads((root/'spec.json').read_text()); inventory=json.loads((root/'assets.json').read_text())
+    spec=json.loads((root/'spec.json').read_text(encoding='utf-8')); inventory=json.loads((root/'assets.json').read_text(encoding='utf-8'))
     if not isinstance(spec,dict) or not isinstance(inventory,dict): return ['Spec and inventory must be objects']
-    if spec.get('version')!=1: errors.append('Unsupported spec version')
+    if not integer(spec.get('version')) or spec.get('version')!=1: errors.append('Unsupported spec version')
     for key in ('fps','duration_frames'):
         if not integer(spec.get(key)) or spec[key]<=0: errors.append(f'{key} must be a positive integer')
     if not integer(spec.get('seed')): errors.append('seed must be an integer')
@@ -88,8 +88,13 @@ def validate(root):
         for tr in transitions:
             if not isinstance(tr,dict) or not integer(tr.get('start')) or not integer(tr.get('end')) or not 0<=tr['start']<tr['end']<=n: errors.append(f'{sid}: invalid transition range')
     if previous!=n: errors.append('Shots must cover the full duration')
+    if (root/'audio-cues.json').exists(): errors.append('Remove audio-cues.json: spec.json.audio_cues is the only cue timeline')
+    mode=spec.get('audio_mode')
+    if mode not in ('silent','designed'): errors.append('audio_mode must explicitly be silent or designed')
     cues=spec.get('audio_cues');cids=set()
     if not isinstance(cues,list): errors.append('audio_cues must be an array');cues=[]
+    if mode=='silent' and cues: errors.append('Silent film cannot contain audio cues')
+    if mode=='designed' and not cues: errors.append('Designed audio requires at least one cue')
     for c in cues:
         if not isinstance(c,dict): errors.append('Cue must be an object');continue
         cid=c.get('id')
@@ -98,15 +103,25 @@ def validate(root):
         start,duration=c.get('start_frame'),c.get('duration_frames')
         if not integer(start) or not integer(duration) or duration<=0 or start<0 or start+duration>n: errors.append(f'{cid}: cue out of timeline')
         if not local(root,c.get('path')): errors.append(f'{cid}: audio file missing or outside project')
+        matched=[a for a in assets if isinstance(a,dict) and a.get('path')==c.get('path')]
+        if not any(a.get('approved') is True and a.get('rights') not in ('unknown',None) for a in matched): errors.append(f'{cid}: audio must have an approved provenance asset')
+        if c.get('role','sfx') not in ('sfx','music','voice'): errors.append(f'{cid}: unknown audio role')
+        for key in ('fade_in_seconds','fade_out_seconds'):
+            if key in c and (not finite(c[key]) or c[key]<0): errors.append(f'{cid}: invalid {key}')
         for key in ('source_offset_seconds','gain_db'):
             if not finite(c.get(key)) or (key=='source_offset_seconds' and c[key]<0): errors.append(f'{cid}: invalid {key}')
         for key in ('visual_event_frame','intentional_offset_frames'):
             if not integer(c.get(key)): errors.append(f'{cid}: {key} must be an integer')
         if integer(c.get('visual_event_frame')) and not 0<=c['visual_event_frame']<n: errors.append(f'{cid}: visual event outside film')
+    target=spec.get('audio_target',{})
+    if not isinstance(target,dict): errors.append('audio_target must be an object')
+    else:
+        for key,lo,hi in [('integrated_lufs',-70,-5),('true_peak_db',-9,0)]:
+            if key in target and (not finite(target[key]) or not lo<=target[key]<=hi): errors.append(f'audio_target: invalid {key}')
     return errors
 
 def samples(root):
-    root=Path(root);spec=json.loads((root/'spec.json').read_text());n=spec['duration_frames'];frames={0,n-1}
+    root=Path(root);spec=json.loads((root/'spec.json').read_text(encoding='utf-8'));n=spec['duration_frames'];frames={0,n-1}
     for s in spec['shots']:
         frames.update((s['start'],(s['start']+s['end']-1)//2,s['end']-1))
         for tr in s.get('transitions',[]):

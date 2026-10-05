@@ -16,3 +16,6 @@ A click confirms an interaction; place it at contact/activation, not after a but
 
 ## Missing input
 If licensed music is required but absent, continue visual production and output a clearly labeled silent draft while reporting the missing track. If silent delivery is allowed by the brief, finalize silent and score sync as not applicable with a reason.
+
+## Executable mixer
+Use `python3 <motion-studio-dir>/scripts/audio.py <project> --output <new-output-directory>`. Canonical inputs are `spec.json.audio_cues` and asset provenance; no separate audio-cues.json is accepted. Cue role is music, voice or sfx. Optional fade_in_seconds/fade_out_seconds apply before cue placement. Music ducks against the summed voice bus using sidechain compression when both exist. Export a 48kHz stereo PCM mix, measure it, normalize in two passes, remeasure and retain audio-qc.json. Targets default to -16 LUFS and -1 dBTP; override through audio_target in spec. Measured results describe the file, not proof of intelligibility or artistic sync. Mark audio listening pending until actually heard.

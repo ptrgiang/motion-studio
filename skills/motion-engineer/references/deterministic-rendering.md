@@ -1,6 +1,7 @@
 # Deterministic rendering
 
 ## Engine decisions
+Pillow: explicit render_frame(frame,spec,format_id,project) returning an RGB image; suitable for procedural 2D typography/shapes, not a substitute for real UI capture or arbitrary organic footage. Inspect resolved fonts and record their hashes.
 Canvas: direct 2D graphics, lightweight explicit frame function; build asset preloading, capture and audio yourself.
 SVG: precise scalable shapes/text, but test filters, fonts and capture cost.
 Remotion: React compositions at frame numbers; use useCurrentFrame/useVideoConfig and consistent installed package versions. Sequence-local frame is relative to its start, so use global time intentionally. Check licensing for intended production use without assuming every deployment is free.

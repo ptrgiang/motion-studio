@@ -9,7 +9,7 @@ def main():
     src=p.add_mutually_exclusive_group(required=True);src.add_argument('--video');src.add_argument('--stills',help='Directory of frame-000000.png style names')
     p.add_argument('--samples',required=True,help='JSON from studio.py samples')
     p.add_argument('--output',required=True);p.add_argument('--columns',type=int,default=4);p.add_argument('--thumb-width',type=int,default=360)
-    a=p.parse_args();data=json.loads(Path(a.samples).read_text());frames=data['frames'];fps=data['fps']
+    a=p.parse_args();data=json.loads(Path(a.samples).read_text(encoding='utf-8'));frames=data['frames'];fps=data['fps']
     if not isinstance(fps,(int,float)) or fps<=0 or not frames or a.columns<=0 or a.thumb_width<=0 or any(not isinstance(f,int) or f<0 for f in frames):p.error('Invalid fps/frames/layout')
     if len(frames)>500:p.error('Select <=500 frames; split large reviews into sheets')
     with tempfile.TemporaryDirectory() as td:

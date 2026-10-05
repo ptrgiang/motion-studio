@@ -1,0 +1,83 @@
+name: Motion Studio checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: motion-studio-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  regression:
+    name: Regression (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      PYTHONUTF8: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt
+      - name: Install Linux render tools
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core
+      - name: Install Windows render tools
+        if: runner.os == 'Windows'
+        run: choco install ffmpeg --yes --no-progress
+      - name: Unit and mixer checks
+        run: python -m unittest discover -s tests -v
+      - name: Full Pillow pipeline checks
+        if: runner.os == 'Linux'
+        env:
+          MOTION_INTEGRATION: '1'
+        run: python -m unittest discover -s tests -p test_motion.py -k IntegrationTests -v
+  canvas:
+    name: Chromium render with audio (both formats)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONUTF8: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python -m pip install -r requirements.txt
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: python skills/motion-studio/scripts/pipeline.py demo ci-demo
+      - name: Install pinned browser runtime
+        working-directory: ci-demo
+        run: |
+          npm install --ignore-scripts
+          npx playwright install --with-deps chromium
+      - run: python skills/motion-studio/scripts/doctor.py --project ci-demo --engine canvas
+      - run: python skills/motion-studio/scripts/pipeline.py run ci-demo --engine canvas --run-id ci
+      - name: Preserve rendered evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: canvas-render-evidence
+          path: |
+            ci-demo/out/ci/**/qc.json
+            ci-demo/out/ci/**/render-check.json
+            ci-demo/out/ci/**/*.mp4
+            ci-demo/out/ci/**/poster.png
+            ci-demo/out/ci/**/contact-sheet.png
+            ci-demo/out/ci/manifest.json
+            ci-demo/out/ci/pipeline-state.json
+            ci-demo/package-lock.json
+          if-no-files-found: warn
+          retention-days: 7

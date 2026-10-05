@@ -1,5 +1,7 @@
 # Motion Studio
 
+Version **1.1.0** — executable rendering/audio pipeline and regression checks.
+
 Seven agent skills for directing, designing, engineering, and reviewing code-rendered motion films. Built for Claude Code with Opus 5.5, with portable `SKILL.md` instructions that other compatible coding agents can also use.
 
 Start from a clear brief and real assets. Develop the story and motion language, render deterministic frames, inspect the actual output, and repair specific defects before delivery.
@@ -28,7 +30,14 @@ cd motion-studio
 python3 skills/motion-studio/scripts/export_claude.py --destination /absolute/path/to/your-video-project/.claude/skills
 ```
 
-On Windows, use `python` if that is your Python command and quote paths containing spaces. For a personal installation, pass the full path to your user `.claude/skills` directory instead. The exporter refuses to overwrite existing members of this pack.
+On Windows, use `python` if that is your Python command and quote paths containing spaces. For a personal installation, pass the full path to your user `.claude/skills` directory instead. The exporter refuses blind overwrites. For installations created by v1.1, inspect and apply a backed-up update:
+
+```sh
+python3 skills/motion-studio/scripts/export_claude.py --destination /path/to/project/.claude/skills --update --dry-run
+python3 skills/motion-studio/scripts/export_claude.py --destination /path/to/project/.claude/skills --update
+```
+
+Updates stop when installed files differ from their recorded baseline. A v1.0 installation has no baseline: preserve it and migrate into a fresh destination instead of overwriting unknown local edits.
 
 Alternatively, copy each complete folder under `skills/` into `.claude/skills/<skill-name>/`. Preserve its references, scripts, and assets. Do not add an extra container directory around the seven skills.
 
@@ -61,9 +70,13 @@ Never invent product screens or metrics. Treat missing required assets as produc
 
 Under `skills/motion-studio/`:
 
+- `scripts/pipeline.py`: one-command per-format rendering, audio, encoding, technical QC, posters, phone-size evidence, and transition clips.
+- `scripts/audio.py`: frame-aligned mix, trims, fades, voice/music ducking, two-pass normalization, and output measurement.
+- `scripts/doctor.py`: dependency/browser availability checks without installing anything.
 - `scripts/studio.py`: initialize project records, validate the asset/timeline/layout structure, and select review frames.
 - `scripts/contact_sheet.py`: generate labeled contact sheets from stills or exact decoded video frames.
 - `scripts/export_claude.py`: export all seven skills into Claude Code's directory structure without overwriting existing skills.
+- `assets/pillow_composition.py`: original procedural 2D frame-function example.
 - `assets/canvas-starter.html`: generic deterministic Canvas frame-function example.
 - `assets/render.mjs`: Playwright capture script with within-runtime seek checks.
 
@@ -81,7 +94,7 @@ Reading and planning require a compatible agent. Rendering additionally requires
 
 | Component | Requirement |
 | --- | --- |
-| Project scripts | Python 3.9+ |
+| Project scripts | Python 3.10+ |
 | Contact sheets | Pillow |
 | Video extraction and encoding | FFmpeg and ffprobe on PATH |
 | Canvas capture | Recent Node.js, project-installed Playwright, and its Chromium browser |
@@ -89,13 +102,38 @@ Reading and planning require a compatible agent. Rendering additionally requires
 
 Dependencies and browser binaries are not bundled. Pin the actual installed versions and preserve the production project's lockfile. The skills do not include model API credentials or force a paid API workflow.
 
-## Validation status
+## Run the sample
 
-Passed: seven skill format checks, structural validator checks, export and overwrite refusal, still/video contact-sheet generation, and an independent missing-input pre-production exercise.
+Install Python dependencies and make FFmpeg/ffprobe available. From the repository root:
 
-The Canvas frame function passed a mocked drawing-operation test. **Real Chromium capture and the complete Playwright-to-video pipeline have not been verified**: Chromium was unavailable and its download failed in the authoring environment. FFmpeg testing used a separate fixture, not the Canvas renderer. No actual Opus production session, client film, audio listening review, or professional artistic equivalence has been certified.
+```sh
+python3 -m pip install -r requirements.txt
+python3 skills/motion-studio/scripts/doctor.py --engine pillow
+python3 skills/motion-studio/scripts/pipeline.py demo ./my-demo
+python3 skills/motion-studio/scripts/pipeline.py run ./my-demo --engine pillow --run-id v1
+```
 
-See [the exact validation scope](skills/motion-studio/references/validation-status.md). Re-run the actual render and perceptual checks in your production environment before treating an output as final.
+This produces separate 16:9 and 9:16 six-second original motion studies with audio, posters, contact sheets, transition clips and QC under `my-demo/out/v1/`. Source samples are editable. They are toolchain examples, not product films or a visual benchmark.
+
+For Canvas, install the demo's pinned Node dependency and Chromium from inside `my-demo` (`npm install`, then `npx playwright install chromium`), and run the pipeline with `--engine canvas`. Use `MOTION_CHROMIUM_PATH` for an existing compatible browser. The runner never substitutes another engine after a Canvas failure.
+
+Canonical audio lives in `spec.json.audio_cues`. Explicit `audio_mode` chooses `designed` or `silent`; a separate `audio-cues.json` is rejected. All used audio files need approved provenance records.
+
+Read [the pipeline contract](skills/motion-studio/references/pipeline.md) for inputs, outputs, engine contracts and review boundaries.
+
+## Checks and validation scope
+
+Run regression checks:
+
+```sh
+python3 -m unittest discover -s tests -v
+```
+
+Set `MOTION_INTEGRATION=1` to include the full Pillow/FFmpeg pipeline tests. GitHub Actions checks Linux and Windows regressions and runs the real Chromium pipeline with audio for both formats. Generated Canvas evidence is retained as a workflow artifact; check the actual workflow result rather than assuming a configured job passed.
+
+Local verification has exercised the complete Pillow pipeline with original audio in both formats, measured output loudness, checked exact duration/count/fps/dimensions and full decode, and inspected representative stills. Chromium remains unavailable in the local authoring environment; its end-to-end test runs separately in CI. See [exact validation status](skills/motion-studio/references/validation-status.md).
+
+A successful run reports **technical_pass_review_pending**, not a finished film. Video playback, required audio listening, typography/readability and artistic judgment must be observed and recorded against the actual output hashes. Technical metadata, a waveform or a contact sheet cannot certify those checks.
 
 ## Source and adaptation
 
