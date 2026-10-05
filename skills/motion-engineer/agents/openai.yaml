@@ -1,0 +1,14 @@
+interface:
+  display_name: Motion Engineer
+  short_description: Build deterministic frames and repeatable renders
+  default_prompt: Use $motion-engineer to complete the relevant stage of my motion
+    video project.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

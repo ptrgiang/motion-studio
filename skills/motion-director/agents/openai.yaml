@@ -1,0 +1,14 @@
+interface:
+  display_name: Motion Director
+  short_description: Turn the audience and message into a film brief
+  default_prompt: Use $motion-director to complete the relevant stage of my motion
+    video project.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

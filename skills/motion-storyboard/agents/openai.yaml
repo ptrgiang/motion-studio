@@ -1,0 +1,14 @@
+interface:
+  display_name: Motion Storyboard
+  short_description: Design narrative beats, states and timed compositions
+  default_prompt: Use $motion-storyboard to complete the relevant stage of my motion
+    video project.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

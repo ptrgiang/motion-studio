@@ -1,0 +1,29 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Deterministic motion test</title>
+<style>html,body{margin:0;background:#eee}canvas{display:block}</style></head><body><canvas id="film"></canvas>
+<script>
+// Generic renderer demonstration. Replace artwork using the approved brief.
+const canvas=document.getElementById('film'),ctx=canvas.getContext('2d');
+const clamp=x=>Math.max(0,Math.min(1,x));const ease=x=>1-Math.pow(1-clamp(x),3);
+window.renderFrame=async function(frame,spec,formatId){
+ const fmt=spec.formats.find(x=>x.id===formatId);if(!fmt)throw Error('Unknown format');
+ if(!Number.isInteger(frame)||frame<0||frame>=spec.duration_frames)throw Error('Frame outside timeline');
+ canvas.width=fmt.width;canvas.height=fmt.height;
+ const w=fmt.width,h=fmt.height,t=frame/spec.fps,u=ease(t/.8),vertical=h>w;
+ ctx.fillStyle='#ebe7df';ctx.fillRect(0,0,w,h);
+ const margin=Math.max(fmt.safe.left,fmt.safe.right,w*.09),size=Math.min(w,h)*.2;
+ // Different explicit hierarchy and path for the two aspect ratios.
+ const px=vertical?w*.5:margin+size*.5,py=vertical?h*.4:h*.5;
+ ctx.save();ctx.translate(px,py+(1-u)*h*.12);ctx.rotate((1-u)*-.22);
+ ctx.fillStyle='#d65a36';ctx.fillRect(-size/2,-size/2,size,size);ctx.restore();
+ const tx=vertical?w*.5:margin+size*1.4,ty=vertical?h*.62:h*.46;
+ ctx.fillStyle='#242722';ctx.textAlign=vertical?'center':'left';ctx.textBaseline='middle';
+ ctx.font=`700 ${Math.round(Math.min(w,h)*.055)}px sans-serif`;ctx.globalAlpha=u;
+ ctx.fillText('FRAME, NOT CLOCK',tx,ty);
+ ctx.font=`400 ${Math.round(Math.min(w,h)*.025)}px sans-serif`;ctx.fillText('Generic renderer test',tx,ty+Math.min(w,h)*.085);ctx.globalAlpha=1;
+ // A seeded stable decorative detail, independent of seek order.
+ const seed=Number(spec.seed)>>>0;ctx.fillStyle='#242722';ctx.beginPath();ctx.arc(w-margin,h-fmt.safe.bottom-20,6+seed%8,0,Math.PI*2);ctx.fill();
+ return true;
+};
+window.frameHash=()=>{const b=ctx.getImageData(0,0,canvas.width,canvas.height).data;let h=2166136261;for(let i=0;i<b.length;i++)h=Math.imul(h^b[i],16777619);return(h>>>0).toString(16)};
+window.preview=async function(){await document.fonts.ready;await window.renderFrame(30,{fps:30,duration_frames:60,seed:42,formats:[{id:'wide',width:960,height:540,safe:{top:36,right:48,bottom:36,left:48}}]},'wide')};window.preview();
+</script></body></html>

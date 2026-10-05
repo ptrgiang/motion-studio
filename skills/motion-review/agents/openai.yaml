@@ -1,0 +1,14 @@
+interface:
+  display_name: Motion Review
+  short_description: Inspect rendered evidence and repair the main defects
+  default_prompt: Use $motion-review to complete the relevant stage of my motion video
+    project.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true
