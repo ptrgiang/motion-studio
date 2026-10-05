@@ -5,7 +5,9 @@ from pathlib import Path
 from studio import validate
 
 def run(cmd):
-    return subprocess.run(cmd,check=True,capture_output=True,text=True,encoding='utf-8',errors='replace')
+    result=subprocess.run(cmd,capture_output=True,text=True,encoding='utf-8',errors='replace')
+    if result.returncode:raise ValueError(f'{cmd[0]} failed ({result.returncode}): {result.stderr[-2500:]}')
+    return result
 def measurement(path,integrated=-16,peak=-1):
     r=run(['ffmpeg','-hide_banner','-i',str(path),'-af',f'loudnorm=I={integrated}:TP={peak}:LRA=11:print_format=json','-f','null','-'])
     start=r.stderr.rfind('{');end=r.stderr.find('}',start)
@@ -41,9 +43,10 @@ def mix(project,output):
     if ducked:
         graph+=['[voice]asplit=2[voice_mix][voice_sc]','[music][voice_sc]sidechaincompress=threshold=0.03:ratio=6:attack=15:release=250[music_duck]']
         buses=[{'music':'music_duck','voice':'voice_mix'}.get(b,b) for b in buses]
-    graph.append(''.join(f'[{b}]' for b in buses)+f'amix=inputs={len(buses)}:normalize=0:duration=longest,apad,atrim=duration={duration}[mix]')
+    samples=round(duration*48000)
+    graph.append(''.join(f'[{b}]' for b in buses)+f'amix=inputs={len(buses)}:normalize=0:duration=longest,apad=whole_len={samples},atrim=end_sample={samples},asetpts=N/SR/TB[mix]')
     raw=out/'mix-raw.wav';final=out/'mix.wav'
-    run(command+['-filter_complex',';'.join(graph),'-map','[mix]','-ar','48000','-ac','2','-c:a','pcm_s24le',str(raw)])
+    run(command+['-filter_complex',';'.join(graph),'-map','[mix]','-t',str(duration),'-ar','48000','-ac','2','-c:a','pcm_s24le',str(raw)])
     target=spec.get('audio_target',{});integrated=target.get('integrated_lufs',-16);peak=target.get('true_peak_db',-1)
     before=measurement(raw,integrated,peak)
     if any(not math.isfinite(float(before[k])) for k in ('input_i','input_tp','input_lra','input_thresh','target_offset')):
