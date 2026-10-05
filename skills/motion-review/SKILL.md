@@ -16,3 +16,5 @@ Read [review-rubric.md](references/review-rubric.md). Judge the observed output 
 7. Read pipeline outputs: per-format `qc.json`, transition clips, phone poster and contact sheet, plus run `manifest.json` and `review.json`. Record which encoded film hash was actually reviewed; invalidate notes when it changes. `technical_pass_review_pending` is never creative approval. Produce `qc.json` and `delivery.md` with completed/pending checks, exact exports, source commands, versions, asset provenance and unresolved human judgments. Final implies all required checks passed, not merely an MP4 path.
 
 Use bundled `motion-studio` tools if available; otherwise use an equivalent verified local extraction workflow. Do not replace the client's artwork with a generated approximation to make the review easier.
+
+For evidence-bound review calibration, read [benchmark.md](references/benchmark.md) and use `scripts/benchmark.py`. Keep private controls hidden during review; leave unobserved dimensions pending.

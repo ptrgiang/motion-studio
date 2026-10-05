@@ -10,3 +10,5 @@ node_modules/
 ci-demo/
 .motion-studio-install.json
 motion-studio-backup-*/
+
+ci-calibration/

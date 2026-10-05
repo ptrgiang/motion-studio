@@ -15,3 +15,10 @@ No full-video playback or audio listening was observed in authoring. The runner 
 
 ## Confirmed GitHub Actions evidence
 Run https://github.com/ptrgiang/motion-studio/actions/runs/37299324016 completed successfully for code commit 3eac78435485c7f9fa2caaae06cd6f702540910f. Windows regression, Ubuntu regression/full Pillow integration, and Chromium two-format rendering jobs all passed. The Canvas artifact was downloaded and checked: wide and vertical each have 180 captured frames, 180 passing reverse-seek SHA-256 checks, a passing direct/sequential check, technical encode/decode QC, and encoded audio measured -16.06 LUFS / -9.43 dBTP. Both Canvas poster frames were inspected for layout/readability. Full video playback/listening remain pending; CI success is technical evidence, not creative approval.
+
+
+## v1.2 local verification (2026-10-05)
+
+Six new recipes and twelve blind controls were rendered through Pillow/FFmpeg in wide and vertical: 24 silent four-second films. Exact frame counts, durations, dimensions, H.264 decode and seek checks passed. Representative final layouts were inspected; a mask compositing fix retains the header/footer. The new benchmark report correctly leaves all twelve cases pending without recorded reviews. No aesthetic aggregate or full-playback approval is claimed.
+
+New unit checks exercise every recipe and variant, both formats, seek order, blind manifests, stale media, exact still-frame evidence, score types and unobserved playback gating. CI adds a full 24-film calibration job alongside existing Windows/Linux regression and Chromium audio checks. See the repository workflow for current results; this document does not predeclare CI success for v1.2.

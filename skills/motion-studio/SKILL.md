@@ -51,3 +51,7 @@ Read [validation-status.md](references/validation-status.md) before claiming tha
 
 ## Sources and boundaries
 Read [sources.md](references/sources.md) for article-to-workflow mapping and primary references. The article motivates the system; the extra design defaults and thresholds are this studio's adjustable operating policy, not claims about universal designer practice. Do not guarantee human-level taste, virality or automatic perfection.
+
+## v1.2 motion library and calibration
+
+Use motion-design’s `scripts/recipes.py` and recipe catalog for six editable, seekable Pillow techniques. Use motion-review’s `scripts/benchmark.py` for blind still/video calibration with media hashes and pending perceptual scores. Treat samples as studies; choose and adapt the technique to the brief before production.

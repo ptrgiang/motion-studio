@@ -1,6 +1,6 @@
 # Motion Studio
 
-Version **1.1.0** — executable rendering/audio pipeline and regression checks.
+Version **1.2.0** — runnable motion recipes and evidence-bound blind review calibration.
 
 Seven agent skills for directing, designing, engineering, and reviewing code-rendered motion films. Built for Claude Code with Opus 5.5, with portable `SKILL.md` instructions that other compatible coding agents can also use.
 
@@ -30,7 +30,7 @@ cd motion-studio
 python3 skills/motion-studio/scripts/export_claude.py --destination /absolute/path/to/your-video-project/.claude/skills
 ```
 
-On Windows, use `python` if that is your Python command and quote paths containing spaces. For a personal installation, pass the full path to your user `.claude/skills` directory instead. The exporter refuses blind overwrites. For installations created by v1.1, inspect and apply a backed-up update:
+On Windows, use `python` if that is your Python command and quote paths containing spaces. For a personal installation, pass the full path to your user `.claude/skills` directory instead. The exporter refuses blind overwrites. For installations created by v1.1 or later, inspect and apply a backed-up update:
 
 ```sh
 python3 skills/motion-studio/scripts/export_claude.py --destination /path/to/project/.claude/skills --update --dry-run
@@ -140,3 +140,19 @@ A successful run reports **technical_pass_review_pending**, not a finished film.
 Inspired by the supplied article *Motion Engineering: Build a Video Studio Around Opus 5.5*, attributed to `@0xwhrrari`, and its studio diagram. This repository contains an authored workflow adaptation rather than a reproduction of the article. Added policies include explicit role responsibilities, a frame-based production contract, asset checks, bounded repairs, and evidence requirements.
 
 See [source mapping and primary documentation](skills/motion-studio/references/sources.md).
+
+## v1.2: runnable techniques and blind calibration
+
+Six four-second silent Pillow studies: kinetic typography, mask reveal, match cut, camera move, schematic UI interaction, and state transition. Each has an editable frame function, wide/vertical layouts, an intentional variant and an injected-defect variant. Read [the design reasons and tuning guide](skills/motion-design/references/recipe-catalog.md).
+
+```sh
+python3 skills/motion-design/scripts/recipes.py match-cut ./match-study
+python3 skills/motion-studio/scripts/pipeline.py run ./match-study --engine pillow --run-id first
+python3 skills/motion-review/scripts/benchmark.py prepare ./calibration
+# Add --render to prepare to encode all 24 films as well as stills.
+python3 skills/motion-review/scripts/benchmark.py assess ./calibration/public
+```
+
+Give only `calibration/public` to a reviewer; retain the private answer key separately. The 12 cases have media hashes, integer-frame evidence and a five-dimension rubric. Scores remain null until observed. Timing and continuity require video evidence in both formats; still-only preparation leaves them pending. A validator checks attribution and evidence integrity, not the truth of a reviewer’s opinion. No aggregate is emitted until all cases have complete valid reviews. Read [the benchmark protocol](skills/motion-review/references/benchmark.md).
+
+These procedural controls teach critique; they are not independently rated professional gold standards. The recipe library uses Pillow; Canvas remains the separately tested starter. New regression checks cover every recipe in both formats, reverse seeking, defective controls, blind manifests, stale evidence and review gating.

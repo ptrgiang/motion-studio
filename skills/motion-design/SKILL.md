@@ -16,3 +16,5 @@ Read [motion-language.md](references/motion-language.md). Design a coherent visu
 7. Hand the engineer explicit values plus reference frames. When polishing a rough cut, report the timestamp, perceptual defect, smallest change and expected visual result.
 
 Use gradients, particles, glass and overshoot only when the concept earns them. Avoid defaulting to giant centered text on a gradient or moving every layer continuously. These are contextual judgments, not a ban on legitimate design techniques.
+
+For executable techniques, read [recipe-catalog.md](references/recipe-catalog.md) and materialize a study with `scripts/recipes.py`. Use its stated purpose to choose and adapt movement, then review both formats.
