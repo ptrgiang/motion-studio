@@ -1,4 +1,19 @@
-# Validation scope — v1.1.0 (2026-10-05)
+# Validation scope — v1.2.0 (2026-10-05)
+
+## Current release evidence
+
+Tested code commit: `d6f9f76202482d732298337d9aba625b03734f1d`.
+[GitHub Actions run 37303373349](https://github.com/ptrgiang/motion-studio/actions/runs/37303373349) passed all four jobs: Windows regression, Ubuntu regression plus full Pillow integration, real Chromium/audio in both formats, and all 24 silent calibration films. Public calibration and Canvas evidence are retained as seven-day workflow artifacts.
+
+Locally, all 32 tests passed with integration enabled. A fresh agent materialized and rendered a study using the instructions; observed mask compositing/travel issues were repaired and the updated study rendered again in both formats. A fresh Claude-directory export resolved sibling skills and validated a standalone study; install version is 1.2.0.
+
+The Windows FFmpeg 9 run exposed unbounded output in the existing audio ducking path. The mixer now bounds padding and trim by exact sample count, resets output timestamps, adds an output duration limit and reports captured FFmpeg diagnostics. The regression asserts exactly 288,000 raw samples for the six-second fixture; Windows now passes.
+
+Perceptual scope remains limited to inspected representative stills. No full-film playback/listening approval, automatic aesthetic score, professional gold-standard equivalence or actual Opus production session is claimed. The twelve blind benchmark reviews remain pending until reviewers inspect and record evidence.
+
+## Historical v1.1 evidence
+
+The following records describe the earlier sample and verification history.
 
 ## Passed locally
 26 regression/integration tests: canonical audio mode/timeline, cue/asset provenance, malformed fps/version, gaps/coverage, layouts, safe area, Unicode, path traversal, short source trim, mixer placement and voice ducking, measured loudness, repeated/shuffled/sequential Pillow pixels, odd yuv420p dimensions, installer diff/backup/legacy refusal/local-edit protection, full two-format Pillow render and silent render.

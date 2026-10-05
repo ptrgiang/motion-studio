@@ -156,3 +156,6 @@ python3 skills/motion-review/scripts/benchmark.py assess ./calibration/public
 Give only `calibration/public` to a reviewer; retain the private answer key separately. The 12 cases have media hashes, integer-frame evidence and a five-dimension rubric. Scores remain null until observed. Timing and continuity require video evidence in both formats; still-only preparation leaves them pending. A validator checks attribution and evidence integrity, not the truth of a reviewer’s opinion. No aggregate is emitted until all cases have complete valid reviews. Read [the benchmark protocol](skills/motion-review/references/benchmark.md).
 
 These procedural controls teach critique; they are not independently rated professional gold standards. The recipe library uses Pillow; Canvas remains the separately tested starter. New regression checks cover every recipe in both formats, reverse seeking, defective controls, blind manifests, stale evidence and review gating.
+
+
+v1.2 release verification: all four [CI jobs passed](https://github.com/ptrgiang/motion-studio/actions/runs/37303373349), including the 24-film calibration render and Windows regression with exact audio sample-count protection. Locally, all 32 tests passed with integration enabled. Perceptual reviews remain pending; see the validation status for the tested commit and limitations.
