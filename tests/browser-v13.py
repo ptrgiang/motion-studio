@@ -17,10 +17,13 @@ for c in meta['captures']:
     with Image.open(root/'assets/ui'/c['file']) as im:assert im.size==(2000,1400)
     for target in c['targets'].values():
         for key,value in target['css'].items():assert abs(target['pixels'][key]-value*2)<.01
-command=['node',str(root/'src/render-dom.mjs'),'--spec',str(root/'spec.json'),'--html',str(root/'src/promo.html'),'--format','wide','--frames','449,90,150,0,240']
+command=['node',str(root/'src/render-dom.mjs'),'--spec',str(root/'spec.json'),'--html',str(root/'src/promo.html'),'--format','wide','--frames','449,378,90,150,0,240']
 with tempfile.TemporaryDirectory() as t:
     subprocess.run(command+['--out',str(Path(t)/'selected')],check=True,cwd=root)
     report=json.loads((Path(t)/'selected/render-check.json').read_text());assert all(c['same'] for c in report['checks']);assert report['sequentialCheck']['same']
+    vertical=command.copy();vertical[vertical.index('wide')]='vertical'
+    subprocess.run(vertical+['--out',str(Path(t)/'vertical')],check=True,cwd=root)
+    assert json.loads((Path(t)/'vertical/layout-check.json').read_text())['pass']
     html=root/'src/promo.html';original=html.read_text();html.write_text(original+'<img src="https://example.invalid/missing.png">')
     try:
         bad=subprocess.run(command+['--out',str(Path(t)/'offline-failure')],cwd=root,capture_output=True,text=True,timeout=75);assert bad.returncode!=0,'Offline asset request incorrectly passed'

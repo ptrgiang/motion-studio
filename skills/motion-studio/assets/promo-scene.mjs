@@ -15,7 +15,7 @@ window.renderFrame=async(frame,current,format)=>{
  set(brand,left,top);put(brand);set(footer,left,f.height-safe.bottom-20,width);put(footer);
  const start=shot.start;const enter=easeOut(progress(frame,start+3,start+21));const titleY=vertical?top+85:top+75;
  set(eyebrow,left,titleY-30,width);eyebrow.textContent=['KEEP THE THOUGHT','CAPTURED FROM THE APP','A DIFFERENT VIEW','LOCAL BY DESIGN','MAKE ROOM FOR IDEAS'][spec.shots.findIndex(s=>s.id===shot.id)];put(eyebrow,{opacity:enter});
- headline.style.transformOrigin='left top';const titleWidth=vertical?width:width*.46;set(headline,left,titleY,titleWidth,vertical?42:46);headline.textContent=shot.copy;put(headline,{y:18*(1-enter),opacity:enter});
+ headline.style.transformOrigin='left top';const titleWidth=vertical?width/1.008:width*.46;set(headline,left,titleY,titleWidth,vertical?42:46);headline.textContent=shot.copy;put(headline,{y:18*(1-enter),opacity:enter});
  support.textContent=['One small place for a useful idea.','Write a thought. Save it locally.','Switch between light and dark.','Your notes remain in this browser.','Write it. Save it. Keep it.'][spec.shots.findIndex(s=>s.id===shot.id)];
  set(support,left,titleY+(vertical?155:130),titleWidth,vertical?19:20);put(support,{y:10*(1-enter),opacity:enter});
  if(shot.id!=='hook'&&shot.id!=='end'){
