@@ -1,6 +1,17 @@
-# Validation scope — v1.2.0 (2026-10-05)
+# Validation scope — v1.3.0 (2026-10-08)
 
-## Current release evidence
+## Current v1.3 release evidence
+
+Tested code commit: `c18519a3756ffa08c44fdec744de6a402f441290`.
+[GitHub Actions run 37775799052](https://github.com/ptrgiang/motion-studio/actions/runs/37775799052) passed the real local UI capture/DOM promo, existing Chromium/audio, Windows regression and 24-film calibration jobs. Ubuntu regression status must be checked against the run before claiming all five jobs passed.
+
+Forty local regression/integration tests passed. A fresh agent prepared the demo from the skill instructions and correctly reported missing local Chromium and required uncaptured UI assets. A standalone Claude-directory export validated the materialized study; install version is 1.3.0.
+
+The DOM artifact was downloaded and checked: both formats have 450 frames at 30fps and exactly 15 seconds, H.264/yuv420p, stereo 48kHz AAC, passing full decode, 13 passing reverse-seek checks, a passing sequential/direct check and 13 passing tagged-layout samples. Original app save/reload persistence and theme toggle, three 2000x1400 captures with DPR2 geometry, shuffled rendering and missing external-asset failure passed in real Chromium. A vertical end-card pulse initially exceeded safe bounds by 3.68 pixels; the title width now reserves its maximum scale and browser regression covers the peak frame in both formats.
+
+Measured lossless mix: -16.03 LUFS / -5.55 dBTP. Encoded exports: -16.05 LUFS / -5.56 dBTP. These are observed sample results. Representative capture, contact-sheet and poster stills were inspected; full-film playback/listening and creative review remain pending. The manifest intentionally retains `final=false`. No actual Opus production session or professional aesthetic score is claimed. Retained CI artifacts expire after seven days.
+
+## Historical v1.2 release evidence
 
 Tested code commit: `d6f9f76202482d732298337d9aba625b03734f1d`.
 [GitHub Actions run 37303373349](https://github.com/ptrgiang/motion-studio/actions/runs/37303373349) passed all four jobs: Windows regression, Ubuntu regression plus full Pillow integration, real Chromium/audio in both formats, and all 24 silent calibration films. Public calibration and Canvas evidence are retained as seven-day workflow artifacts.
@@ -43,4 +54,4 @@ New unit checks exercise every recipe and variant, both formats, seek order, bli
 
 Forty local tests passed with Pillow integration enabled. New checks cover event-linked cue drift, each procedural SFX kind, stable per-cue seeds/sample counts, font cmap/rights assertion/hash checks, capture metadata tampering, timing/keyframe/shot behavior and complete transform resets. The DOM demo and local functional app are independently authored; browser execution is assigned to a dedicated Chromium CI job because local Chromium is unavailable.
 
-The new CI job runs actual local-app save/persistence/theme tests, three-state 2x captures, CSS/pixel coordinate checks, shuffled DOM rendering, blocked external-asset failure and full two-format 15-second DOM/audio encoding with tagged layout/seek evidence. Treat this job as configured until its result is observed. Perceptual playback/listening remains pending. No professional aesthetic score is claimed.
+The new CI job runs actual local-app save/persistence/theme tests, three-state 2x captures, CSS/pixel coordinate checks, shuffled DOM rendering, blocked external-asset failure and full two-format 15-second DOM/audio encoding with tagged layout/seek evidence. The successful run and downloaded evidence are recorded above. Perceptual playback/listening remains pending. No professional aesthetic score is claimed.
