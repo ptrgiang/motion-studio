@@ -18,3 +18,5 @@ Read [motion-language.md](references/motion-language.md). Design a coherent visu
 Use gradients, particles, glass and overshoot only when the concept earns them. Avoid defaulting to giant centered text on a gradient or moving every layer continuously. These are contextual judgments, not a ban on legitimate design techniques.
 
 For executable techniques, read [recipe-catalog.md](references/recipe-catalog.md) and materialize a study with `scripts/recipes.py`. Use its stated purpose to choose and adapt movement, then review both formats.
+
+For HTML techniques, use motion-studio’s `assets/motion-dom.mjs` and `references/dom-production.md`: scalar/vector paths, grapheme-aware kinetic type, shot-local time and beat clock. Adapt the original 15-second demo to a real brief. Measure packaged-font geometry and review phone-size readability; animation helpers do not establish aesthetic quality.

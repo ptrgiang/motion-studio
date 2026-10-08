@@ -37,3 +37,10 @@ Run https://github.com/ptrgiang/motion-studio/actions/runs/37299324016 completed
 Six new recipes and twelve blind controls were rendered through Pillow/FFmpeg in wide and vertical: 24 silent four-second films. Exact frame counts, durations, dimensions, H.264 decode and seek checks passed. Representative final layouts were inspected; forward usage identified mask/annotation compositing and extra edge travel; fixes retain the header/footer and align travel to headline bounds. The new benchmark report correctly leaves all twelve cases pending without recorded reviews. No aesthetic aggregate or full-playback approval is claimed.
 
 New unit checks exercise every recipe and variant, both formats, seek order, blind manifests, stale media, exact still-frame evidence, score types and unobserved playback gating. CI adds a full 24-film calibration job alongside existing Windows/Linux regression and Chromium audio checks. See the repository workflow for current results; this document does not predeclare CI success for v1.2.
+
+
+## v1.3 authoring scope (2026-10-08)
+
+Forty local tests passed with Pillow integration enabled. New checks cover event-linked cue drift, each procedural SFX kind, stable per-cue seeds/sample counts, font cmap/rights assertion/hash checks, capture metadata tampering, timing/keyframe/shot behavior and complete transform resets. The DOM demo and local functional app are independently authored; browser execution is assigned to a dedicated Chromium CI job because local Chromium is unavailable.
+
+The new CI job runs actual local-app save/persistence/theme tests, three-state 2x captures, CSS/pixel coordinate checks, shuffled DOM rendering, blocked external-asset failure and full two-format 15-second DOM/audio encoding with tagged layout/seek evidence. Treat this job as configured until its result is observed. Perceptual playback/listening remains pending. No professional aesthetic score is claimed.

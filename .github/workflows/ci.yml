@@ -105,3 +105,52 @@ jobs:
           path: ci-calibration/public
           retention-days: 7
           if-no-files-found: error
+
+  dom:
+    name: Real local UI capture and 15-second DOM promo
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONUTF8: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python -m pip install -r requirements.txt
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core
+      - run: python skills/motion-studio/scripts/promo.py ci-promo --font /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf --license-file /usr/share/doc/fonts-dejavu-core/copyright
+      - name: Install pinned browser runtime
+        working-directory: ci-promo
+        run: |
+          npm install --ignore-scripts
+          npx playwright install --with-deps chromium
+      - run: python skills/motion-studio/scripts/doctor.py --project ci-promo --engine dom
+      - run: python skills/motion-studio/scripts/capture.py ci-promo --run-id ui --rights original --provenance "Original local Motion Notes app" --approved
+      - run: python tests/browser-v13.py ci-promo
+      - run: python skills/motion-studio/scripts/pipeline.py run ci-promo --engine dom --run-id ci
+      - name: Preserve DOM and capture evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dom-promo-evidence
+          path: |
+            ci-promo/assets/ui
+            ci-promo/out/ci/**/qc.json
+            ci-promo/out/ci/**/render-check.json
+            ci-promo/out/ci/**/layout-check.json
+            ci-promo/out/ci/**/*.mp4
+            ci-promo/out/ci/**/poster.png
+            ci-promo/out/ci/**/phone-poster.png
+            ci-promo/out/ci/**/contact-sheet.png
+            ci-promo/out/ci/audio/audio-qc.json
+            ci-promo/out/ci/manifest.json
+            ci-promo/out/ci/pipeline-state.json
+            ci-promo/package-lock.json
+            ci-promo/browser-test.json
+          retention-days: 7
+          if-no-files-found: error

@@ -46,7 +46,7 @@ def export(source_root,destination,update=False,dry_run=False):
                 target=dst/n
                 if target.exists():target.rename(backup/n);moved.append(n)
                 (Path(td)/n).rename(target);created.append(n)
-            temp=Path(td)/MANIFEST;temp.write_text(json.dumps({'version':'1.2.0','files':new},indent=2)+'\n',encoding='utf-8');temp.replace(dst/MANIFEST)
+            temp=Path(td)/MANIFEST;temp.write_text(json.dumps({'version':'1.3.0','files':new},indent=2)+'\n',encoding='utf-8');temp.replace(dst/MANIFEST)
     except Exception:
         for n in created:shutil.rmtree(dst/n)
         for n in moved:(backup/n).rename(dst/n)

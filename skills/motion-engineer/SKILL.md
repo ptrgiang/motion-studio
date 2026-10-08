@@ -18,3 +18,5 @@ Read [deterministic-rendering.md](references/deterministic-rendering.md). Make t
 Use motion-studio’s doctor.py and pipeline.py for executable Pillow/Canvas production, frame-based audio and technical QC. Keep perceptual review pending until observed.
 
 For the bundled Canvas starter, locate `motion-studio` by frontmatter name and read its renderer recipe. Copy starter and renderer to the project, resolve Playwright in the project, and render the generic test. Do not silently use its sample artwork as the client's film.
+
+For executable whole-page HTML motion, read motion-studio’s `references/dom-production.md`. Use its DOM adapter, local capture tool and font packer; keep Canvas and DOM renderer contracts explicit. Tag essential layout bounds, verify out-of-order seeks and inspect normal-speed output.

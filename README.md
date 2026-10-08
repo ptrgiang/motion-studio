@@ -1,6 +1,6 @@
 # Motion Studio
 
-Version **1.2.0** — runnable motion recipes and evidence-bound blind review calibration.
+Version **1.3.0** — real UI capture, whole-DOM rendering, shared events, procedural SFX and a 15-second app promo.
 
 Seven agent skills for directing, designing, engineering, and reviewing code-rendered motion films. Built for Claude Code with Opus 5.5, with portable `SKILL.md` instructions that other compatible coding agents can also use.
 
@@ -159,3 +159,21 @@ These procedural controls teach critique; they are not independently rated profe
 
 
 v1.2 release verification: all four [CI jobs passed](https://github.com/ptrgiang/motion-studio/actions/runs/37303373349), including the 24-film calibration render and Windows regression with exact audio sample-count protection. Locally, all 32 tests passed with integration enabled. Perceptual reviews remain pending; see the validation status for the tested commit and limitations.
+
+
+## v1.3: product capture and DOM production
+
+Capture authorized local product states with screenshots, CSS/pixel rectangles, viewport/DPR and source/plan/image hashes. Render the entire HTML stage with the explicit `dom` engine and reusable frame-based motion helpers. Package approved fonts and licenses, validate glyph coverage and link generated original SFX to named events in the sole `spec.json` timeline.
+
+The new `Motion Notes` fixture is a functional original local note app: save/persist a note, toggle its view, and render a 15-second promo with a three-second end card in 16:9 and 9:16. It demonstrates an actual sample app, not fabricated client UI. [Runnable setup and contracts](skills/motion-studio/references/dom-production.md).
+
+```sh
+python3 skills/motion-studio/scripts/promo.py ./my-promo --font /path/DejaVuSans.ttf --license-file /path/font-license.txt
+# In my-promo: npm install --ignore-scripts; npx playwright install chromium
+python3 skills/motion-studio/scripts/capture.py ./my-promo --run-id ui --rights original --provenance "Original local Motion Notes app" --approved
+python3 skills/motion-studio/scripts/pipeline.py run ./my-promo --engine dom --run-id first
+```
+
+Additional commands: `pack_font.py` packages caller-approved font/license assets; `sfx.py` generates click/tick/blip/whoosh/riser/impact/pad cues with independent stable seeds. The existing measured mixer, exact encode/decode checks and pending perceptual reviews remain in use. Capture uses fresh headless contexts and local project entrypoints; it does not access existing browser sessions or authenticated accounts. DOM render blocks external asset requests and checks tagged safe-area bounds. Bounds, cmap and hash checks cannot certify final readability or artistic quality.
+
+The implementation was independently authored after reviewing [promo-video-generator](https://github.com/visser23/promo-video-generator) at `70031de47d0cb11dcd95fffa050672f953bcbb04`. No upstream code or Pitchcraft assets are included. Motion blur and parallel worker/resume optimization remain future work.

@@ -29,3 +29,7 @@ Record pending/passed/blocked per gate, artifact paths, observations, input/spec
 
 ## Resume
 Read saved gate status, spec and latest review first. Verify paths and prior commands. Resume from earliest invalidated gate; never rebuild the entire film merely because the conversation compacted.
+
+## Optional v1.3 fields
+
+events: object of unique event IDs to integer global frames. rhythm: {bpm,offset_frame} for known constant-tempo beats. fonts: [{family,path,license_path,css,checked_text,sha256}]. Linked audio cues add event_id; the validator checks event/visual/start-frame consistency with deliberate offsets. Capture metadata assets bind image/source/plan hashes. See [DOM production](dom-production.md) for runnable contracts.

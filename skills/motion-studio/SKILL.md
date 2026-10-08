@@ -55,3 +55,7 @@ Read [sources.md](references/sources.md) for article-to-workflow mapping and pri
 ## v1.2 motion library and calibration
 
 Use motion-design’s `scripts/recipes.py` and recipe catalog for six editable, seekable Pillow techniques. Use motion-review’s `scripts/benchmark.py` for blind still/video calibration with media hashes and pending perceptual scores. Treat samples as studies; choose and adapt the technique to the brief before production.
+
+## v1.3 DOM production
+
+Read [dom-production.md](references/dom-production.md) for real local UI capture, packaged fonts, named event timing, original SFX and the 15-second functional-app promo. Use explicit `dom` engine selection. Keep render hashes and perceptual review evidence separate.

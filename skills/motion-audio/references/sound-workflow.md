@@ -19,3 +19,9 @@ If licensed music is required but absent, continue visual production and output 
 
 ## Executable mixer
 Use `python3 <motion-studio-dir>/scripts/audio.py <project> --output <new-output-directory>`. Canonical inputs are `spec.json.audio_cues` and asset provenance; no separate audio-cues.json is accepted. Cue role is music, voice or sfx. Optional fade_in_seconds/fade_out_seconds apply before cue placement. Music ducks against the summed voice bus using sidechain compression when both exist. Export a 48kHz stereo PCM mix, measure it, normalize in two passes, remeasure and retain audio-qc.json. Targets default to -16 LUFS and -1 dBTP; override through audio_target in spec. Measured results describe the file, not proof of intelligibility or artistic sync. Mark audio listening pending until actually heard.
+
+## v1.3 procedural event cues
+
+Use motion-studio's `scripts/sfx.py PROJECT --event saveNote --kind click --id save-click --frames 6`. Optional `--offset` is an intentional integer pre/post-lap and `--gain-db` sets cue gain. Define `spec.events.saveNote` first. Kinds: click, tick, blip, whoosh, riser, impact, pad. The generator writes original 48kHz mono PCM, records usable original provenance and a linked canonical audio cue. It switches explicit audio mode to designed; existing other cues remain intact.
+
+Sound seed derives from project seed, cue ID, event ID and kind; adding/reordering another cue does not alter existing noise. Exact sample count derives from frames/fps. Inputs must fit the timeline, and existing IDs/files are refused. These are small procedural textures, not guaranteed polished music. Use the existing mixer for stereo buses, voice ducking, two-pass LUFS normalization and encoded true-peak measurement. Do not replace these checks with raw RMS/peak or assume synthesized audio sounds good without listening.

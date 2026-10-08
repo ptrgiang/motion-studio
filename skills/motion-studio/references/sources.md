@@ -24,3 +24,7 @@ Role separation, integer-frame schema, asset provenance validation, same-frame t
 - https://www.remotion.dev/docs/spring — frame/fps spring inputs.
 - https://www.remotion.dev/docs/random — seeded deterministic variation.
 Keep documentation links as references; verify installed tool APIs before execution. No HyperFrames executable was verified or included.
+
+## v1.3 adaptation
+
+Reviewed [promo-video-generator](https://github.com/visser23/promo-video-generator) at `70031de47d0cb11dcd95fffa050672f953bcbb04`. Adopted ideas: real UI capture with geometry, whole-DOM frame rendering, reusable timing primitives, per-event sound design and packaged-font checks. New code and the Motion Notes app/assets were independently authored; no upstream code, fonts, audio or Pitchcraft screenshots were copied. Existing frame-based spec, LUFS/true-peak mix, provenance and review boundaries remain authoritative. Subframe blur, worker pools and Tesseract are not part of v1.3.

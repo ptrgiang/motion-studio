@@ -80,6 +80,7 @@ def probe(path,spec,fmt):
     return {'technical_pass':True,'metadata':data,'full_decode_pass':True}
 
 def execute(project,engine,run_id):
+    if engine not in ('pillow','canvas','dom'):raise ValueError('Unknown engine')
     root=Path(project).resolve();errors=validate(root)
     if errors:raise ValueError('; '.join(errors))
     for tool in ('ffmpeg','ffprobe'):
@@ -102,7 +103,10 @@ def execute(project,engine,run_id):
             if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]{0,63}',fmt['id']):raise ValueError('Format id must be a safe filename')
             folder=output/fmt['id'];frames=folder/'frames';frames.mkdir(parents=True)
             if engine=='pillow':pillow_frames(root,spec,fmt,frames)
-            else:cmd(['node',root/'src/render.mjs','--spec',root/'spec.json','--html',root/'src/canvas-starter.html','--format',fmt['id'],'--out',frames],cwd=root)
+            else:
+                renderer='render-dom.mjs' if engine=='dom' else 'render.mjs'
+                html='promo.html' if engine=='dom' else 'canvas-starter.html'
+                cmd(['node',root/'src'/renderer,'--spec',root/'spec.json','--html',root/'src'/html,'--format',fmt['id'],'--out',frames],cwd=root)
             movie=folder/'film.mp4'
             args=['ffmpeg','-v','error','-framerate',spec['fps'],'-start_number','0','-i',frames/'frame-%06d.png']
             if mixed:args+=['-i',mixed]
@@ -137,7 +141,7 @@ def execute(project,engine,run_id):
         versions={'python':sys.version,'ffmpeg':cmd(['ffmpeg','-version']).stdout.splitlines()[0],'pillow':__import__('PIL').__version__,'font_override':os.environ.get('MOTION_FONT_PATH')}
         for font in (os.environ.get('MOTION_FONT_PATH',''),'/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf','C:/Windows/Fonts/arial.ttf','/System/Library/Fonts/Supplemental/Arial.ttf'):
             if font and Path(font).is_file():versions['resolved_font']={'path':font,'sha256':sha(font)};break
-        write(output/'manifest.json',{'version':'1.2.0','engine':engine,'spec_sha256':record['spec_sha256'],'source_hashes':sources,'asset_hashes':assets,'runtime':versions,'exports':exports,'review_status':'pending','final':False})
+        write(output/'manifest.json',{'version':'1.3.0','engine':engine,'spec_sha256':record['spec_sha256'],'source_hashes':sources,'asset_hashes':assets,'runtime':versions,'exports':exports,'review_status':'pending','final':False})
         write(output/'review.json',{'spec_sha256':record['spec_sha256'],'film_hashes':{e['format']:e['sha256'] for e in exports},'visual':'pending','temporal':'pending','audio':'pending' if mixed else 'not_applicable_intentional_silence','defects':[]})
         record['status']='technical_pass_review_pending';write(output/'pipeline-state.json',record)
         (output/'delivery.md').write_text(f'# Rendered draft\n\nEngine: {engine}. All requested formats encoded and passed structural/decode checks.\n\nVisual/temporal review and required audio listening remain pending. Inspect per-format contact sheets, phone posters, transition clips and the full films. Machine QC does not approve artistic quality.\n\nReproduce with a fresh run id: python3 <motion-studio-dir>/scripts/pipeline.py run <project> --engine {engine} --run-id <new-id>\n\nSource and asset hashes are in manifest.json.\n',encoding='utf-8')
@@ -149,7 +153,7 @@ def execute(project,engine,run_id):
 def main():
     p=argparse.ArgumentParser(description=__doc__);sub=p.add_subparsers(dest='command',required=True)
     d=sub.add_parser('demo');d.add_argument('project')
-    r=sub.add_parser('run');r.add_argument('project');r.add_argument('--engine',choices=['pillow','canvas'],default='pillow');r.add_argument('--run-id',default=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ'))
+    r=sub.add_parser('run');r.add_argument('project');r.add_argument('--engine',choices=['pillow','canvas','dom'],default='pillow');r.add_argument('--run-id',default=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ'))
     a=p.parse_args()
     try:
         if a.command=='demo':demo(a.project)

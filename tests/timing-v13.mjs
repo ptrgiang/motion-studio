@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {pathToFileURL} from 'node:url';
+const m=await import(pathToFileURL(process.argv[2]));
+const entries=[[0,[0,1]],[30,[90,4]],[60,[0,1]]];const curve=m.keyframes(entries,t=>t);entries[1][1][0]=999;
+assert.deepEqual(curve(15),[45,2.5]);assert.deepEqual(curve(60),[0,1]);const copy=curve(0);copy[0]=9;assert.deepEqual(curve(0),[0,1]);assert.throws(()=>m.keyframes([[1,0],[1,2]]));assert.throws(()=>m.keyframes([[0,[1]],[1,[1,2]]]));
+const shots=[{id:'a',start:0,end:30},{id:'b',start:30,end:60}];assert.equal(m.shotAt(29,shots).id,'a');assert.equal(m.shotAt(30,shots).id,'b');assert.equal(m.shotAt(60,shots),null);assert.equal(m.shotAt(45,shots).local,15);
+assert.equal(m.eventFrame({events:{hit:15}},'hit'),15);assert.throws(()=>m.eventFrame({events:{}},'hit'));
+const beat=m.beatClock(30,100,3);assert.equal(beat.frame(1),21);assert.equal(beat.pulse(21),1);assert.equal(beat.pulse(2),0);assert.throws(()=>m.beatClock(30,0));
+const el={style:{}};m.put(el,{x:12,opacity:0});assert.equal(el.style.display,'none');m.put(el);assert.equal(el.style.display,'');assert.match(el.style.transform,/translate\(0px,0px\)/);assert.throws(()=>m.put(el,{x:NaN}));
+console.log('Timing, shot ownership, event links and complete transform reset passed');

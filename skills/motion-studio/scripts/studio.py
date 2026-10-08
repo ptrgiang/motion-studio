@@ -88,6 +88,20 @@ def validate(root):
         for tr in transitions:
             if not isinstance(tr,dict) or not integer(tr.get('start')) or not integer(tr.get('end')) or not 0<=tr['start']<tr['end']<=n: errors.append(f'{sid}: invalid transition range')
     if previous!=n: errors.append('Shots must cover the full duration')
+    # Captures bind metadata to the actual source, plan and image bytes.
+    import hashlib
+    for a in assets:
+        if not isinstance(a,dict) or a.get('role')!='capture-metadata' or not local(root,a.get('path')): continue
+        try:
+            metadata=json.loads((root/a['path']).read_text(encoding='utf-8'))
+            source=metadata.get('source')
+            if not local(root,source) or metadata.get('source_sha256')!=hashlib.sha256((root/source).read_bytes()).hexdigest(): errors.append('Captured source changed; capture again')
+            plan=root/'capture-plan.json'
+            if plan.is_file() and metadata.get('plan_sha256')!=hashlib.sha256(plan.read_bytes()).hexdigest(): errors.append('Capture plan changed; capture again')
+            for image in metadata['captures']:
+                file=(Path(a['path']).parent/image['file']).as_posix()
+                if not local(root,file) or image.get('sha256')!=hashlib.sha256((root/file).read_bytes()).hexdigest(): errors.append('Captured screenshot missing or hash stale')
+        except (ValueError,KeyError,TypeError): errors.append('Malformed capture metadata')
     if (root/'audio-cues.json').exists(): errors.append('Remove audio-cues.json: spec.json.audio_cues is the only cue timeline')
     mode=spec.get('audio_mode')
     if mode not in ('silent','designed'): errors.append('audio_mode must explicitly be silent or designed')
@@ -113,6 +127,37 @@ def validate(root):
         for key in ('visual_event_frame','intentional_offset_frames'):
             if not integer(c.get(key)): errors.append(f'{cid}: {key} must be an integer')
         if integer(c.get('visual_event_frame')) and not 0<=c['visual_event_frame']<n: errors.append(f'{cid}: visual event outside film')
+    events=spec.get('events',{})
+    if not isinstance(events,dict): errors.append('events must be an object');events={}
+    for eid,frame in events.items():
+        if not isinstance(eid,str) or not eid.strip() or not integer(frame) or not 0<=frame<n: errors.append('Event ids and frames invalid')
+    for c in cues:
+        if isinstance(c,dict) and 'event_id' in c:
+            event=events.get(c['event_id']) if isinstance(c['event_id'],str) else None
+            if not integer(event) or c.get('visual_event_frame')!=event or not integer(c.get('intentional_offset_frames')) or c.get('start_frame')!=event+c['intentional_offset_frames']: errors.append(f'{c.get("id")}: linked event/cue timing stale')
+    rhythm=spec.get('rhythm')
+    if rhythm is not None and (not isinstance(rhythm,dict) or not finite(rhythm.get('bpm')) or rhythm['bpm']<=0 or not integer(rhythm.get('offset_frame'))): errors.append('Invalid constant-tempo rhythm')
+    fonts=spec.get('fonts',[])
+    if not isinstance(fonts,list): errors.append('fonts must be an array');fonts=[]
+    families=set()
+    for f in fonts:
+        if not isinstance(f,dict): errors.append('Font must be an object');continue
+        family=f.get('family')
+        if not isinstance(family,str) or not family or family in families: errors.append('Font families must be unique')
+        else: families.add(family)
+        for key in ('path','license_path'):
+            if not local(root,f.get(key)): errors.append(f'{family}: missing font or license')
+            elif not any(a.get('path')==f[key] and a.get('approved') is True and a.get('rights') not in ('unknown',None) for a in assets if isinstance(a,dict)): errors.append(f'{family}: font/license provenance unapproved')
+        if local(root,f.get('path')):
+            import hashlib
+            if f.get('sha256')!=hashlib.sha256((root/f['path']).read_bytes()).hexdigest(): errors.append(f'{family}: font hash stale')
+            try:
+                from fontTools.ttLib import TTFont
+                with TTFont(root/f['path']) as face: covered=set((face.getBestCmap() or {}).keys())
+                text=''.join(shot.get('copy','') for shot in shots if isinstance(shot,dict))+f.get('checked_text','')
+                if any(not c.isspace() and ord(c) not in covered for c in text): errors.append(f'{family}: required glyph missing')
+            except (ValueError,OSError): errors.append(f'{family}: invalid font')
+        if not isinstance(f.get('css'),str) or not f['css']: errors.append(f'{family}: font preload css required')
     target=spec.get('audio_target',{})
     if not isinstance(target,dict): errors.append('audio_target must be an object')
     else:
@@ -129,6 +174,7 @@ def samples(root):
             a,b=tr['start'],tr['end'];stride=max(1,(b-a)//30)
             frames.update(range(a-1,b+1,stride));frames.update((a-1,a,b-1,b))
     for c in spec.get('audio_cues',[]): frames.add(c['visual_event_frame'])
+    for frame in spec.get('events',{}).values(): frames.update((frame-1,frame,frame+1))
     print(json.dumps({'fps':spec['fps'],'frames':sorted(f for f in frames if 0<=f<n)},indent=2))
 
 def main():
