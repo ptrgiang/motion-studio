@@ -63,3 +63,7 @@ Read [dom-production.md](references/dom-production.md) for real local UI capture
 ## v1.4 preview and bound review
 
 Read [review-studio.md](references/review-studio.md) to inspect a rendered run in the local preview studio, focus captured UI with deterministic camera transforms, examine readability warnings and record per-format observations bound to exact inputs/export bytes. Use review.py import/assess/compare after actual inspection. Never inherit approval after inputs change.
+
+## v1.5 showreel craft
+
+For a brand reel or slideshow critique, read [showreel-craft.md](references/showreel-craft.md) before G1/G2. Use the original browser craft study, movement plan, dimensional camera/contour toolkit, cut-safe temporal capture and encoded-film action audit. Choose a signature transformation and verify it in rendered evidence. This route defaults to 60fps; spec schema remains version 1.

@@ -14,3 +14,7 @@ Read [direction.md](references/direction.md). Inspect the supplied content, not 
 5. Hand off a chosen concept, evidence-backed claims, required asset ids, style constraints and outstanding blockers to `motion-storyboard`. Create a mock styleframe for an uncertain design choice; do not spend a full render budget resolving it.
 
 Treat G1 as complete only when required assets and truthful proof are available. Continue planning around missing assets without portraying the draft as production-ready.
+
+## Showreel revisions
+
+For a studio intro, brand reel or slideshow critique, resolve motion-studio by frontmatter name and read references/showreel-craft.md. Follow the motif/action/camera/reading plan and use executable craft tools when appropriate. Review encoded results; ambient wobble is not narrative motion and a machine pass is not creative approval.

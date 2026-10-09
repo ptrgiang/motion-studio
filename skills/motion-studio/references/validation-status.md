@@ -70,3 +70,9 @@ New unit checks exercise every recipe and variant, both formats, seek order, bli
 Forty local tests passed with Pillow integration enabled. New checks cover event-linked cue drift, each procedural SFX kind, stable per-cue seeds/sample counts, font cmap/rights assertion/hash checks, capture metadata tampering, timing/keyframe/shot behavior and complete transform resets. The DOM demo and local functional app are independently authored; browser execution is assigned to a dedicated Chromium CI job because local Chromium is unavailable.
 
 The new CI job runs actual local-app save/persistence/theme tests, three-state 2x captures, CSS/pixel coordinate checks, shuffled DOM rendering, blocked external-asset failure and full two-format 15-second DOM/audio encoding with tagged layout/seek evidence. The successful run and downloaded evidence are recorded above. Perceptual playback/listening remains pending. No professional aesthetic score is claimed.
+
+## v1.5 local evidence (2026-10-09)
+
+49 regression tests passed (2 integration checks skipped in this invocation). Original craft Node tests passed for retargeting continuity, camera projection, logarithmic zoom, contour topology and cut-safe shutter sampling. Actual Chromium 134.0.6998.35 with Node 24 rendered the 6-second craft study at 960x540 and 540x960, 3 temporal samples, original audio, exact frame count and repeated seeks. Both pipeline outputs are technical_pass_review_pending. These are runtime checks, not professional taste or listening approval. A dedicated craft CI job has been added; its result must be checked after push.
+
+Both Pillow integration tests also passed after the atomic-write changes. New exposure-validation regression passed.

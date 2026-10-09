@@ -1,0 +1,8 @@
+<!doctype html><meta charset="utf-8"><style>html,body{margin:0;background:#12131a}canvas{display:block}</style><canvas></canvas><script type="module">
+import {phase,mix,contour,morph,path,pose,project,rotate} from './motion-craft.mjs';
+const canvas=document.querySelector('canvas'),ctx=canvas.getContext('2d');
+window.renderFrame=(frame,spec,format)=>{const f=spec.formats.find(x=>x.id===format);canvas.width=f.width;canvas.height=f.height;const t=frame/spec.fps,U=Math.min(f.width,f.height),p=phase(t,1,3),cam=pose(t,[{t:0,zoom:.8,ry:-.35},{t:6,zoom:1.2,ry:.35}]);
+ctx.fillStyle='#12131a';ctx.fillRect(0,0,f.width,f.height);const points=morph(contour('circle',U*.45,U*.45),contour('rounded',U*.85,U*.4),p);
+for(let j=14;j>=0;j--){const q=points.map(([x,y])=>project(rotate([x,y,j*5],.3,t*.2,t*.1),cam,{width:f.width,height:f.height,focal:U*1.5}));if(q.some(x=>!x))continue;path(ctx,q);ctx.fillStyle=j?'#1946be':'#426cff';ctx.fill();ctx.strokeStyle='#809aff';ctx.lineWidth=1;ctx.stroke();}
+ctx.fillStyle='#f6f2e9';ctx.textAlign='center';ctx.font=`bold ${U*.06}px sans-serif`;ctx.fillText('SHAPE → SPACE',f.width/2,f.height*.87);};window.motionReady=Promise.resolve();
+</script>

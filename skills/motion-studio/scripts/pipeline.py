@@ -4,6 +4,7 @@ import argparse,hashlib,importlib.util,json,os,re,shutil,subprocess,sys,tracebac
 from datetime import datetime,timezone
 from pathlib import Path
 from fractions import Fraction
+from io import BytesIO
 from studio import validate,init
 from audio import mix
 from review import snapshot,init as init_review
@@ -56,7 +57,10 @@ def pillow_frames(project,spec,fmt,out):
         im=render(f,spec,fmt['id'],project)
         if im.size!=(fmt['width'],fmt['height']) or im.mode!='RGB':raise ValueError('Renderer output must match format dimensions and RGB mode')
         if f in expected:hashes[f]=hashlib.sha256(im.tobytes()).hexdigest()
-        im.save(out/f'frame-{f:06d}.png')
+        buffer=BytesIO();im.save(buffer,format='PNG');target=out/f'frame-{f:06d}.png';temporary=target.with_suffix('.partial');temporary.write_bytes(buffer.getvalue());temporary.replace(target)
+        with Image.open(target) as saved:
+            saved.load()
+            if saved.size!=im.size or saved.tobytes()!=im.tobytes():raise ValueError('Frame write integrity failed')
     for f in reversed(samples):
         current=hashlib.sha256(render(f,spec,fmt['id'],project).tobytes()).hexdigest()
         if current!=expected[f] or hashes[f]!=expected[f]:raise ValueError('Seek/sequential decoded pixel mismatch')
@@ -105,12 +109,15 @@ def execute(project,engine,run_id):
             folder=output/fmt['id'];frames=folder/'frames';frames.mkdir(parents=True)
             if engine=='pillow':pillow_frames(root,spec,fmt,frames)
             else:
-                renderer='render-dom.mjs' if engine=='dom' else 'render.mjs'
+                renderer='render-dom.mjs' if engine=='dom' else ('render-craft.mjs' if spec.get('render',{}).get('adapter')=='craft' else 'render.mjs')
                 html='promo.html' if engine=='dom' else 'canvas-starter.html'
                 cmd(['node',root/'src'/renderer,'--spec',root/'spec.json','--html',root/'src'/html,'--format',fmt['id'],'--out',frames],cwd=root)
             movie=folder/'film.mp4'
             args=['ffmpeg','-v','error','-framerate',spec['fps'],'-start_number','0','-i',frames/'frame-%06d.png']
-            if mixed:args+=['-i',mixed]
+            if mixed:
+                with wave.open(str(mixed),'rb') as wav:
+                    if wav.getnframes()!=round(spec['duration_frames']/spec['fps']*48000) or len(wav.readframes(wav.getnframes()))!=wav.getnframes()*wav.getnchannels()*wav.getsampwidth():raise ValueError('Audio file incomplete before encoding')
+                args+=['-i',mixed]
             args+=['-map','0:v:0']
             if mixed:args+=['-map','1:a:0','-c:a','aac','-b:a','192k']
             args+=['-frames:v',spec['duration_frames'],'-c:v','libx264','-pix_fmt','yuv420p','-movflags','+faststart',movie]

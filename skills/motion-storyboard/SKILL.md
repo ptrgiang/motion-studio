@@ -15,3 +15,7 @@ Read [story-and-layout.md](references/story-and-layout.md). Turn the brief into 
 6. Create an animatic with flat shapes/stills to inspect story and pacing. Revise the sequence if it feels confusing even with effects removed. Hand frame timing and continuity contract to `motion-design` and `motion-engineer`.
 
 Never approve a shot only because it looks impressive. Remove or combine a shot that contributes no new information, purposeful emotion or resolution.
+
+## Showreel revisions
+
+For a studio intro, brand reel or slideshow critique, resolve motion-studio by frontmatter name and read references/showreel-craft.md. Follow the motif/action/camera/reading plan and use executable craft tools when appropriate. Review encoded results; ambient wobble is not narrative motion and a machine pass is not creative approval.

@@ -20,3 +20,7 @@ Locate `motion-studio` and use its `scripts/audio.py` for frame-based placement,
 Do not call sound finished from a contact sheet. An intentionally silent film is valid only if it fits the brief and is explicitly recorded.
 
 For original event-seeded procedural cues, use motion-studio’s `scripts/sfx.py` and the v1.3 section of [sound-workflow.md](references/sound-workflow.md). Link generated cues to named events in the sole spec and retain the existing measured mixer/listening gates.
+
+## Showreel revisions
+
+For a studio intro, brand reel or slideshow critique, resolve motion-studio by frontmatter name and read references/showreel-craft.md. Follow the motif/action/camera/reading plan and use executable craft tools when appropriate. Review encoded results; ambient wobble is not narrative motion and a machine pass is not creative approval.

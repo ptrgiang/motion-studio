@@ -1,6 +1,6 @@
 # Motion Studio
 
-Version **1.4.0** — real UI capture, whole-DOM rendering, shared events, procedural SFX and a 15-second app promo.
+Version **1.5.0** — real UI capture, whole-DOM rendering, shared events, procedural SFX and a 15-second app promo.
 
 Seven agent skills for directing, designing, engineering, and reviewing code-rendered motion films. Built for Claude Code with Opus 5.5, with portable `SKILL.md` instructions that other compatible coding agents can also use.
 
@@ -180,7 +180,7 @@ The implementation was independently authored after reviewing [promo-video-gener
 
 v1.3 verification: 40 local tests passed. The [verified CI run](https://github.com/ptrgiang/motion-studio/actions/runs/37775799052) passed real local capture and both 15-second DOM exports, browser integration, existing Canvas/audio, Windows regression and 24-film calibration. Check the run for the remaining Ubuntu job status. Downloaded DOM evidence confirms 450 frames per format, seek/layout/decode checks and encoded audio measurement. Full playback/listening remains pending; [exact validation scope](skills/motion-studio/references/validation-status.md).
 
-## v1.4: preview, UI camera and version-bound review
+## v1.5: preview, UI camera and version-bound review
 
 A local review studio provides frame stepping, timeline seek, format switching, a safe-area overlay, synchronized lossless live audio and an encoded-film view. Export timestamped notes with explicit per-format inspection flags; import them with the review tool. Updated inputs or video bytes invalidate prior review. Each fresh render starts pending.
 
@@ -197,3 +197,17 @@ The DOM demo now focuses real capture regions with camera keyframes and maps cur
 v1.3 historical CI: the Ubuntu regression job eventually timed out during package installation; its four other jobs passed. v1.4 checks existing tools first and bounds package-manager waits, then reruns regression and browser checks.
 
 v1.4 verification: all five [CI jobs passed](https://github.com/ptrgiang/motion-studio/actions/runs/37872009746), including real preview controls, encoded playback, camera/click mapping, readability fixtures and both 450-frame DOM exports. The regression suite has 49 tests, plus Ubuntu full integration. Downloaded evidence and [exact validation scope](skills/motion-studio/references/validation-status.md) distinguish technical success from remaining perceptual review.
+
+## v1.5 showreel craft
+
+Synthesis of [20 primary repositories](skills/motion-studio/references/repo-research-v15.md), with original executable primitives. Adds spring retargeting, dimensional projection, contour morphs, perspective planes, cut-safe Canvas temporal capture, encoded-motion diagnostics and atomic output integrity. Optional engines remain optional.
+
+```bash
+python skills/motion-studio/scripts/craft.py my-study
+cd my-study
+npm install --ignore-scripts
+npx playwright install chromium
+python ../skills/motion-studio/scripts/pipeline.py run . --engine canvas --run-id draft
+```
+
+The six-second study verifies the toolkit; adapt its art before client production. See [showreel craft](skills/motion-studio/references/showreel-craft.md).

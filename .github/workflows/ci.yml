@@ -176,3 +176,41 @@ jobs:
             ci-promo/browser-test.json
           retention-days: 7
           if-no-files-found: error
+
+  craft:
+    name: Dimensional craft and temporal exposure
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python -m pip install -r requirements.txt
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: node tests/craft-v15.mjs
+      - run: python skills/motion-studio/scripts/craft.py ci-craft
+      - working-directory: ci-craft
+        run: |
+          npm install --ignore-scripts
+          npx playwright install --with-deps chromium
+      - run: python skills/motion-studio/scripts/pipeline.py run ci-craft --engine canvas --run-id ci
+      - run: python skills/motion-studio/scripts/motion_audit.py ci-craft/out/ci/wide/film.mp4 --plan ci-craft/motion-plan.json --out ci-craft/audit-wide.json
+      - run: python skills/motion-studio/scripts/motion_audit.py ci-craft/out/ci/vertical/film.mp4 --plan ci-craft/motion-plan.json --out ci-craft/audit-vertical.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: craft-render-evidence
+          path: |
+            ci-craft/out/ci/**/qc.json
+            ci-craft/out/ci/**/render-check.json
+            ci-craft/out/ci/**/*.mp4
+            ci-craft/out/ci/**/contact-sheet.png
+            ci-craft/audit-*.json
+            ci-craft/package-lock.json
+          retention-days: 7

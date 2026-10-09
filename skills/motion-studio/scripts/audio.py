@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Mix canonical frame-based cues, duck music, normalize and measure actual output."""
+import wave
 import argparse,json,math,subprocess
 from pathlib import Path
 from studio import validate
@@ -45,7 +46,7 @@ def mix(project,output):
         buses=[{'music':'music_duck','voice':'voice_mix'}.get(b,b) for b in buses]
     samples=round(duration*48000)
     graph.append(''.join(f'[{b}]' for b in buses)+f'amix=inputs={len(buses)}:normalize=0:duration=longest,apad=whole_len={samples},atrim=end_sample={samples},asetpts=N/SR/TB[mix]')
-    raw=out/'mix-raw.wav';final=out/'mix.wav'
+    raw=out/'mix-raw.wav';final=out/'mix.wav';partial=out/'mix-normalized.partial.wav'
     run(command+['-filter_complex',';'.join(graph),'-map','[mix]','-t',str(duration),'-ar','48000','-ac','2','-c:a','pcm_s24le',str(raw)])
     target=spec.get('audio_target',{});integrated=target.get('integrated_lufs',-16);peak=target.get('true_peak_db',-1)
     before=measurement(raw,integrated,peak)
@@ -53,7 +54,11 @@ def mix(project,output):
         raise ValueError('Audio is silent/unmeasurable; cannot claim loudness normalization')
     filt=(f'loudnorm=I={integrated}:TP={peak}:LRA=11:measured_I={before["input_i"]}:measured_TP={before["input_tp"]}:'
           f'measured_LRA={before["input_lra"]}:measured_thresh={before["input_thresh"]}:offset={before["target_offset"]}:linear=true')
-    run(['ffmpeg','-v','error','-i',str(raw),'-af',filt,'-ar','48000','-ac','2','-c:a','pcm_s24le',str(final)])
+    run(['ffmpeg','-v','error','-i',str(raw),'-af',filt,'-ar','48000','-ac','2','-c:a','pcm_s24le',str(partial)])
+    with wave.open(str(partial),'rb') as wav:
+        expected=samples*wav.getnchannels()*wav.getsampwidth()
+        if wav.getnframes()!=samples or len(wav.readframes(samples))!=expected:raise ValueError('Normalized audio is incomplete')
+    partial.replace(final)
     after=measurement(final,integrated,peak);lufs=float(after['input_i']);tp=float(after['input_tp'])
     passed=math.isfinite(lufs) and math.isfinite(tp) and abs(lufs-integrated)<=1 and tp<=peak+.2
     report={'targets':{'integrated_lufs':integrated,'true_peak_db':peak},'measured_output':{'integrated_lufs':lufs,'true_peak_db':tp},'loudness_pass':passed,'voice_ducking':ducked,'sample_rate':48000,'channels':2,'source_measurement':before,'output_measurement':after,'listening':'pending'}

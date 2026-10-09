@@ -172,6 +172,14 @@ def validate(root):
     else:
         for key,lo,hi in [('integrated_lufs',-70,-5),('true_peak_db',-9,0)]:
             if key in target and (not finite(target[key]) or not lo<=target[key]<=hi): errors.append(f'audio_target: invalid {key}')
+    render=spec.get('render',{})
+    if not isinstance(render,dict): errors.append('render must be an object')
+    elif render:
+        if render.get('adapter')!='craft': errors.append('Unknown render adapter')
+        if type(render.get('samples',1)) is not int or not 1<=render.get('samples',1)<=16: errors.append('render samples must be 1..16')
+        if not finite(render.get('shutter',.5)) or not 0<=render.get('shutter',.5)<=1: errors.append('Invalid render shutter')
+        cuts=render.get('cuts',[])
+        if not isinstance(cuts,list) or any(type(c) is not int or c<0 or c>=spec.get('duration_frames',0) for c in cuts) or cuts!=sorted(set(cuts)): errors.append('Render cuts must be sorted unique in-range frames')
     return errors
 
 def samples(root):
