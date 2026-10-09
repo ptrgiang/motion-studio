@@ -24,6 +24,8 @@ motion-craft.mjs exports:
 - textureQuad: two affine triangles approximate a projected plane. Subdivide large planes to reduce perspective distortion. Supply unscaled canvas coordinates.
 - random(id,seed), phase, smooth, mix, path, shutterFrames.
 
+Reset all Canvas state on every frame, including textBaseline, textAlign, clip, transform, shadows and compositing. ctx.clearRect alone does not reset state; use ctx.reset() on a verified browser, a canvas dimension reset, or assign every state explicitly. Keep failures in seek-diagnostic.json and fix the composition rather than relaxing hash checks.
+
 Check capabilities before choosing direction. If unavailable, solve the runtime or state a viable direction before producing art; do not silently replace a dimensional film with flat title cards.
 
 ## Review encoded bytes
