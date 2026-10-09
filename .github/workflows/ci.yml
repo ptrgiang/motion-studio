@@ -199,6 +199,7 @@ jobs:
         run: |
           npm install --ignore-scripts
           npx playwright install --with-deps chromium
+      - run: python tests/craft-browser-v15.py ci-craft
       - run: python skills/motion-studio/scripts/pipeline.py run ci-craft --engine canvas --run-id ci
       - run: python skills/motion-studio/scripts/motion_audit.py ci-craft/out/ci/wide/film.mp4 --plan ci-craft/motion-plan.json --out ci-craft/audit-wide.json
       - run: python skills/motion-studio/scripts/motion_audit.py ci-craft/out/ci/vertical/film.mp4 --plan ci-craft/motion-plan.json --out ci-craft/audit-vertical.json
