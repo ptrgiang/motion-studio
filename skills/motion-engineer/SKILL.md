@@ -20,3 +20,7 @@ Use motion-studio’s doctor.py and pipeline.py for executable Pillow/Canvas pro
 For the bundled Canvas starter, locate `motion-studio` by frontmatter name and read its renderer recipe. Copy starter and renderer to the project, resolve Playwright in the project, and render the generic test. Do not silently use its sample artwork as the client's film.
 
 For executable whole-page HTML motion, read motion-studio’s `references/dom-production.md`. Use its DOM adapter, local capture tool and font packer; keep Canvas and DOM renderer contracts explicit. Tag essential layout bounds, verify out-of-order seeks and inspect normal-speed output.
+
+## v1.4 review workflow
+
+Read motion-studio’s references/review-studio.md for the local preview, camera geometry, readability diagnostics and review.py commands. Resolve motion-studio by frontmatter name. Inspect actual exported motion/audio; source or asset changes require a new run and fresh review. Treat machine readability findings as heuristics.

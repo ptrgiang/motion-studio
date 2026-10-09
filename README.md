@@ -1,6 +1,6 @@
 # Motion Studio
 
-Version **1.3.0** — real UI capture, whole-DOM rendering, shared events, procedural SFX and a 15-second app promo.
+Version **1.4.0** — real UI capture, whole-DOM rendering, shared events, procedural SFX and a 15-second app promo.
 
 Seven agent skills for directing, designing, engineering, and reviewing code-rendered motion films. Built for Claude Code with Opus 5.5, with portable `SKILL.md` instructions that other compatible coding agents can also use.
 
@@ -179,3 +179,19 @@ Additional commands: `pack_font.py` packages caller-approved font/license assets
 The implementation was independently authored after reviewing [promo-video-generator](https://github.com/visser23/promo-video-generator) at `70031de47d0cb11dcd95fffa050672f953bcbb04`. No upstream code or Pitchcraft assets are included. Motion blur and parallel worker/resume optimization remain future work.
 
 v1.3 verification: 40 local tests passed. The [verified CI run](https://github.com/ptrgiang/motion-studio/actions/runs/37775799052) passed real local capture and both 15-second DOM exports, browser integration, existing Canvas/audio, Windows regression and 24-film calibration. Check the run for the remaining Ubuntu job status. Downloaded DOM evidence confirms 450 frames per format, seek/layout/decode checks and encoded audio measurement. Full playback/listening remains pending; [exact validation scope](skills/motion-studio/references/validation-status.md).
+
+## v1.4: preview, UI camera and version-bound review
+
+A local review studio provides frame stepping, timeline seek, format switching, a safe-area overlay, synchronized lossless live audio and an encoded-film view. Export timestamped notes with explicit per-format inspection flags; import them with the review tool. Updated inputs or video bytes invalidate prior review. Each fresh render starts pending.
+
+```sh
+python skills/motion-studio/scripts/preview.py ./my-promo --run-id first
+python skills/motion-studio/scripts/review.py import ./my-promo --run-id first --notes /path/motion-review-notes.json
+python skills/motion-studio/scripts/review.py assess ./my-promo --run-id first
+# After fixing and rendering another run:
+python skills/motion-studio/scripts/review.py compare ./my-promo --run-id second --before first
+```
+
+The DOM demo now focuses real capture regions with camera keyframes and maps cursor/click ripple through the same CSS geometry. Tagged text/control sizes, overlaps and estimated reading holds appear in readability-check.json. These are warnings for inspection, not automatic creative approval. [Workflow, limits and camera contract](skills/motion-studio/references/review-studio.md).
+
+v1.3 historical CI: the Ubuntu regression job eventually timed out during package installation; its four other jobs passed. v1.4 checks existing tools first and bounds package-manager waits, then reruns regression and browser checks.

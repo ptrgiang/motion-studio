@@ -35,8 +35,8 @@ Treat gates as documented internal checks in autonomous mode; show useful eviden
 - Save checkpoints after each gate: completed artifacts, observations, defects, next action. Invalidate downstream evidence when upstream copy, fps, asset, style or timing changes.
 - Deliver editable source, exact dependency versions/lockfile, reproducible commands, asset provenance, final videos, poster, per-format reviews and remaining limitations. Separate requested drafts from verified finals.
 
-## Executable pipeline (v1.1)
-Read [pipeline.md](references/pipeline.md) before execution. Use `doctor.py` to check the chosen engine. `pipeline.py demo <new-project>` creates original procedural sample inputs; `pipeline.py run <project> --engine pillow|canvas --run-id <version>` validates, mixes audio, renders each layout, encodes, verifies, and produces review evidence. Use sample art only to test the toolchain. Customize the project's composition for a real brief.
+## Executable pipeline
+Read [pipeline.md](references/pipeline.md) before execution. Use `doctor.py` to check the chosen engine. `pipeline.py demo <new-project>` creates original procedural sample inputs; `pipeline.py run <project> --engine pillow|canvas|dom --run-id <version>` validates, mixes audio, renders each layout, encodes, verifies, and produces review evidence. Use sample art only to test the toolchain. Customize the project's composition for a real brief.
 
 Treat `technical_pass_review_pending` as a rendered draft. Inspect actual contact sheets, phone posters, transition clips and full film, listen to required audio, and record defects before marking any creative gate passed. Canonical audio mode and cues live only in spec.json; reject a second audio-cues.json.
 
@@ -59,3 +59,7 @@ Use motion-design’s `scripts/recipes.py` and recipe catalog for six editable, 
 ## v1.3 DOM production
 
 Read [dom-production.md](references/dom-production.md) for real local UI capture, packaged fonts, named event timing, original SFX and the 15-second functional-app promo. Use explicit `dom` engine selection. Keep render hashes and perceptual review evidence separate.
+
+## v1.4 preview and bound review
+
+Read [review-studio.md](references/review-studio.md) to inspect a rendered run in the local preview studio, focus captured UI with deterministic camera transforms, examine readability warnings and record per-format observations bound to exact inputs/export bytes. Use review.py import/assess/compare after actual inspection. Never inherit approval after inputs change.

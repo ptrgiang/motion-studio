@@ -14,8 +14,13 @@ def demo(project,font,license):
     spec['shots']=[{'id':id,'start':a,'end':b,'copy':copy,'purpose':purpose,'entry_state':'previous beat rests','exit_state':'stable hold','asset_ids':[],'layouts':{'wide':'copy left, captured UI right','vertical':'copy above, captured UI below'},'transitions':[{'start':a,'end':a+24}]} for id,a,b,copy,purpose in beats]
     for shot in spec['shots']:
         if shot['id'] in ('write','theme','local'):shot['asset_ids']=['capture-ui-metadata','capture-ui-draft','capture-ui-saved','capture-ui-dark']
+    spec['readability']={'phone_width':360,'min_text_px':12,'min_ui_control_px':18,'words_per_second':3}
+    for shot in spec['shots']:
+        if shot['id'] in ('write','theme'):
+            region=[50,170,760,430] if shot['id']=='write' else [500,0,500,430]
+            shot['camera']=[[shot['start'],[0,0,1000,700]],[shot['start']+35,region],[shot['end']-1,region]]
     save(root/'spec.json',spec)
-    for file in ('promo-product.html','promo.html','promo-scene.mjs','motion-dom.mjs','browser-runtime.mjs','render-dom.mjs'):shutil.copy2(ASSETS/file,root/'src'/file)
+    for file in ('promo-product.html','promo.html','promo-scene.mjs','motion-dom.mjs','browser-runtime.mjs','render-dom.mjs','camera-ui.mjs','readability.mjs'):shutil.copy2(ASSETS/file,root/'src'/file)
     # Product markup expects .ttf; reject rather than silently packaging another extension.
     if Path(font).suffix.lower()!='.ttf':raise ValueError('Promo fixture requires a TTF font')
     pack(root,font,license,'MotionFont',''.join(s['copy'] for s in spec['shots'])+'Motion Notes Write Save Keep Dark view Light view Saved A thought to keep Ý tưởng nhỏ',True)

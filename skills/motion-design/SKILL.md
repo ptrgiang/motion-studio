@@ -20,3 +20,7 @@ Use gradients, particles, glass and overshoot only when the concept earns them. 
 For executable techniques, read [recipe-catalog.md](references/recipe-catalog.md) and materialize a study with `scripts/recipes.py`. Use its stated purpose to choose and adapt movement, then review both formats.
 
 For HTML techniques, use motion-studio’s `assets/motion-dom.mjs` and `references/dom-production.md`: scalar/vector paths, grapheme-aware kinetic type, shot-local time and beat clock. Adapt the original 15-second demo to a real brief. Measure packaged-font geometry and review phone-size readability; animation helpers do not establish aesthetic quality.
+
+## v1.4 review workflow
+
+Read motion-studio’s references/review-studio.md for the local preview, camera geometry, readability diagnostics and review.py commands. Resolve motion-studio by frontmatter name. Inspect actual exported motion/audio; source or asset changes require a new run and fresh review. Treat machine readability findings as heuristics.

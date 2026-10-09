@@ -18,3 +18,7 @@ Read [review-rubric.md](references/review-rubric.md). Judge the observed output 
 Use bundled `motion-studio` tools if available; otherwise use an equivalent verified local extraction workflow. Do not replace the client's artwork with a generated approximation to make the review easier.
 
 For evidence-bound review calibration, read [benchmark.md](references/benchmark.md) and use `scripts/benchmark.py`. Keep private controls hidden during review; leave unobserved dimensions pending.
+
+## v1.4 review workflow
+
+Read motion-studio’s references/review-studio.md for the local preview, camera geometry, readability diagnostics and review.py commands. Resolve motion-studio by frontmatter name. Inspect actual exported motion/audio; source or asset changes require a new run and fresh review. Treat machine readability findings as heuristics.

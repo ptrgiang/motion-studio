@@ -137,6 +137,15 @@ def validate(root):
             if not integer(event) or c.get('visual_event_frame')!=event or not integer(c.get('intentional_offset_frames')) or c.get('start_frame')!=event+c['intentional_offset_frames']: errors.append(f'{c.get("id")}: linked event/cue timing stale')
     rhythm=spec.get('rhythm')
     if rhythm is not None and (not isinstance(rhythm,dict) or not finite(rhythm.get('bpm')) or rhythm['bpm']<=0 or not integer(rhythm.get('offset_frame'))): errors.append('Invalid constant-tempo rhythm')
+    policy=spec.get('readability',{})
+    if not isinstance(policy,dict) or any(k in policy and (not finite(policy[k]) or policy[k]<=0) for k in ('phone_width','min_text_px','min_ui_control_px','words_per_second')):errors.append('Invalid positive readability policy')
+    for shot in spec.get('shots',[]):
+        if not isinstance(shot,dict) or 'camera' not in shot:continue
+        keys=shot['camera'];previous=-1
+        if not isinstance(keys,list) or not keys:errors.append('Camera keyframes required');continue
+        for key in keys:
+            if not isinstance(key,list) or len(key)!=2 or not integer(key[0]) or not shot['start']<=key[0]<shot['end'] or key[0]<=previous or not isinstance(key[1],list) or len(key[1])!=4 or any(not finite(v) for v in key[1]) or any(v<0 for v in key[1][:2]) or any(v<=0 for v in key[1][2:]):errors.append('Invalid ordered camera region/frame');break
+            previous=key[0]
     fonts=spec.get('fonts',[])
     if not isinstance(fonts,list): errors.append('fonts must be an array');fonts=[]
     families=set()
