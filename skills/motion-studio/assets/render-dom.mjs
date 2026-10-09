@@ -13,13 +13,15 @@ if(!frames.length||frames.some(f=>!Number.isInteger(f)||f<0||f>=spec.duration_fr
 for(const f of frames){try{await access(path.join(out,`frame-${String(f).padStart(6,'0')}.png`));throw Error('Output exists; use a fresh run');}catch(e){if(e.code!=='ENOENT')throw e;}}
 const server=await serve(project);let browser;
 try{
- browser=await runtime(project).chromium.launch({headless:true,...(process.env.MOTION_CHROMIUM_PATH?{executablePath:process.env.MOTION_CHROMIUM_PATH}:{})});
+ browser=await runtime(project).chromium.launch({headless:true,args:['--disable-lcd-text'],...(process.env.MOTION_CHROMIUM_PATH?{executablePath:process.env.MOTION_CHROMIUM_PATH}:{})});
  const context=await browser.newContext({viewport:{width:fmt.width,height:fmt.height},deviceScaleFactor:1});await offline(context,server.origin);const page=await context.newPage();const faults=[];
  page.on('pageerror',e=>faults.push(e.message));page.on('response',r=>{if(r.status()>=400)faults.push('HTTP '+r.status()+' '+r.url());});page.on('requestfailed',r=>faults.push('Request failed: '+r.url()));
  await page.goto(server.origin+'/'+path.relative(project,html).split(path.sep).join('/'));await page.waitForFunction(()=>window.motionReady!==undefined,{timeout:30000});await page.evaluate(async()=>await window.motionReady);await ready(page,spec.fonts?.map(f=>f.css)||[]);
  const stage=page.locator('#stage');const digest=buffer=>createHash('sha256').update(buffer).digest('hex');const results={},layout=[],readability=[];
  const draw=async frame=>{
   await page.evaluate(async({frame,spec,format})=>{if(typeof window.renderFrame!=='function')throw Error('Missing renderFrame');await window.renderFrame(frame,spec,format);}, {frame,spec,format:fmt.id});
+  // Rebuild paint state after seeking: Chromium may retain subpixel ink beyond dirty rectangles.
+  await page.evaluate(()=>{const stage=document.getElementById('stage'),display=stage.style.display;stage.style.display='none';void stage.offsetHeight;stage.style.display=display;void stage.offsetHeight;});
   const bounds=await stage.boundingBox();if(!bounds||Math.round(bounds.width)!==fmt.width||Math.round(bounds.height)!==fmt.height)throw Error('Stage dimensions do not match spec');
   if(faults.length)throw Error(faults.join('\n'));return await stage.screenshot({animations:'disabled',caret:'hide'});
  };
@@ -38,5 +40,5 @@ try{
  await writeFile(path.join(out,'layout-check.json'),JSON.stringify({format:fmt.id,samples:layout,pass:layout.every(s=>!s.failures.length),note:'Tagged element bounds only; not an aesthetic, glyph or contrast certificate.'},null,2));
  await writeFile(path.join(out,'readability-check.json'),JSON.stringify({format:fmt.id,samples:readability,readingHolds:readingHolds(spec),policy:spec.readability||{},status:'heuristic_review_required',note:'Declared text/control geometry and estimated reading holds; no OCR, contrast or aesthetic certificate.'},null,2));
  if(layout.some(s=>s.failures.length))throw Error('Tagged layout exceeds safe bounds; inspect layout-check.json');
- await writeFile(path.join(out,'render-check.json'),JSON.stringify({engine:'dom',format:fmt.id,algorithm:'sha256-lossless-screenshot-png',frameCount:frames.length,checks,sequentialCheck:{frame:target,same:true},runtime:{node:process.version,browser:browser.version()},note:'Same-runtime screenshot comparison; cross-platform pixel equality is not promised.'},null,2));
+ await writeFile(path.join(out,'render-check.json'),JSON.stringify({engine:'dom',format:fmt.id,algorithm:'sha256-lossless-screenshot-png',frameCount:frames.length,checks,sequentialCheck:{frame:target,same:true},runtime:{node:process.version,browser:browser.version(),textRasterization:'lcd-disabled',stageRepaint:'display-reset-before-screenshot'},note:'Same-runtime screenshot comparison; cross-platform pixel equality is not promised.'},null,2));
 }finally{if(browser)await browser.close();await server.close();}
