@@ -31,8 +31,9 @@ try{
    const failures=evidence.filter(e=>e.x<fmt.safe.left-1||e.y<fmt.safe.top-1||e.x+e.width>fmt.width-fmt.safe.right+1||e.y+e.height>fmt.height-fmt.safe.bottom+1);layout.push({frame,elements:evidence,failures});
   }
  }
- const checks=[];for(const frame of [...samples].filter(f=>frames.includes(f)).reverse())checks.push({frame,same:digest(await draw(frame))===results[frame]});
- if(checks.some(c=>!c.same))throw Error('DOM seek order changed screenshot pixels');
+ const checks=[];for(const frame of [...samples].filter(f=>frames.includes(f)).reverse()){const pixels=await draw(frame);const actual=digest(pixels);checks.push({frame,same:actual===results[frame],expected:results[frame],actual});if(actual!==results[frame]){await mkdir(path.join(out,'seek-failures'),{recursive:true});await writeFile(path.join(out,'seek-failures',`actual-${frame}.png`),pixels);await writeFile(path.join(out,'seek-failures',`expected-${frame}.png`),await readFile(path.join(out,`frame-${String(frame).padStart(6,'0')}.png`)));}}
+ await writeFile(path.join(out,'seek-diagnostic.json'),JSON.stringify(checks,null,2));
+ if(checks.some(c=>!c.same))throw Error('DOM seek order changed screenshot pixels at '+checks.filter(c=>!c.same).map(c=>c.frame).join(','));
  const target=Math.min(spec.duration_frames-1,spec.fps);const direct=digest(await draw(target));for(let f=0;f<=target;f++)await draw(f);if(direct!==digest(await draw(target)))throw Error('DOM sequential/direct mismatch');
  await writeFile(path.join(out,'layout-check.json'),JSON.stringify({format:fmt.id,samples:layout,pass:layout.every(s=>!s.failures.length),note:'Tagged element bounds only; not an aesthetic, glyph or contrast certificate.'},null,2));
  await writeFile(path.join(out,'readability-check.json'),JSON.stringify({format:fmt.id,samples:readability,readingHolds:readingHolds(spec),policy:spec.readability||{},status:'heuristic_review_required',note:'Declared text/control geometry and estimated reading holds; no OCR, contrast or aesthetic certificate.'},null,2));

@@ -159,6 +159,8 @@ jobs:
             ci-promo/assets/ui
             ci-promo/out/ci/**/qc.json
             ci-promo/out/ci/**/render-check.json
+            ci-promo/out/ci/**/seek-diagnostic.json
+            ci-promo/out/ci/**/seek-failures/*.png
             ci-promo/out/ci/**/layout-check.json
             ci-promo/out/ci/**/readability-check.json
             ci-promo/out/ci/preview*
