@@ -1,9 +1,24 @@
-# Validation scope — v1.3.0 (2026-10-08)
+# Validation scope — v1.4.0 (2026-10-09)
 
-## Current v1.3 release evidence
+## Current v1.4 release evidence
+
+Tested code commit: `5c4989d3e2a85dca88fd29ea0a8a04bc56de245d`.
+[GitHub Actions run 37872009746](https://github.com/ptrgiang/motion-studio/actions/runs/37872009746) passed all five jobs: Windows/Ubuntu regression, full Pillow integration, existing Canvas/audio, 24-film calibration, and real local capture/DOM render/preview integration. The regression suite contains 49 tests; full integration also runs separately on Ubuntu. Locally the prior 48-test suite passed with integration enabled, and the updated nine-test v1.4 subset (including the additional camera check) passed.
+
+Downloaded DOM evidence confirms both 15-second exports have 450 frames at 30fps, 18 passing reverse-seek checks, a passing direct/sequential check, passing layout samples and encode/decode QC. The renderer rebuilds stage paint state and disables LCD text rasterization to remove retained subpixel glyph-edge artifacts; exact PNG-hash checks remain enabled. Browser/runtime and rasterization choices are recorded. Padded text paint bounds keep ink inside text containers.
+
+Actual browser integration passed frame stepping, format switch, safe-area display, camera cursor/ripple alignment, deliberately small/overlapping text diagnostics, short-hold diagnostics, encoded H.264/AAC metadata and play/pause, preserved frame on view switch, notes export and pending bound-review import. Automated playback checks do not establish human full-film inspection. Preview UI screenshot and representative evidence were inspected.
+
+Readability diagnostics retain meaningful warnings: 19 sampled small-text/control warnings in wide, zero such sampled warnings in vertical, and a short estimated copy hold for the local shot. These are heuristic findings, not failures hidden as creative approval. Screenshot label text is not OCR-checked; full phone-size review remains required.
+
+A fresh agent created and technically verified an original six-second silent Pillow film in both formats, inspected still evidence and imported per-format visual observations. The review correctly retained temporal inspection pending and treated intentional silence as not requiring listening. A standalone Claude-directory v1.4 export initialized a DOM study. Installed dependencies and capture are still required in the target environment.
+
+Full DOM-film playback/listening and creative approval remain pending. The manifest keeps final=false. No actual Opus production session or professional aesthetic score is claimed. CI artifacts are retained for seven days.
+
+## Historical v1.3 release evidence
 
 Tested code commit: `c18519a3756ffa08c44fdec744de6a402f441290`.
-[GitHub Actions run 37775799052](https://github.com/ptrgiang/motion-studio/actions/runs/37775799052) passed the real local UI capture/DOM promo, existing Chromium/audio, Windows regression and 24-film calibration jobs. Ubuntu regression status must be checked against the run before claiming all five jobs passed.
+[GitHub Actions run 37775799052](https://github.com/ptrgiang/motion-studio/actions/runs/37775799052) passed the real local UI capture/DOM promo, existing Chromium/audio, Windows regression and 24-film calibration jobs. The Ubuntu regression job timed out during package installation; its tests did not run in this attempt. The four other jobs passed. v1.4 bounds package-manager waits and checks installed tools first.
 
 Forty local regression/integration tests passed. A fresh agent prepared the demo from the skill instructions and correctly reported missing local Chromium and required uncaptured UI assets. A standalone Claude-directory export validated the materialized study; install version is 1.3.0.
 

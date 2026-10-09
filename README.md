@@ -195,3 +195,5 @@ python skills/motion-studio/scripts/review.py compare ./my-promo --run-id second
 The DOM demo now focuses real capture regions with camera keyframes and maps cursor/click ripple through the same CSS geometry. Tagged text/control sizes, overlaps and estimated reading holds appear in readability-check.json. These are warnings for inspection, not automatic creative approval. [Workflow, limits and camera contract](skills/motion-studio/references/review-studio.md).
 
 v1.3 historical CI: the Ubuntu regression job eventually timed out during package installation; its four other jobs passed. v1.4 checks existing tools first and bounds package-manager waits, then reruns regression and browser checks.
+
+v1.4 verification: all five [CI jobs passed](https://github.com/ptrgiang/motion-studio/actions/runs/37872009746), including real preview controls, encoded playback, camera/click mapping, readability fixtures and both 450-frame DOM exports. The regression suite has 49 tests, plus Ubuntu full integration. Downloaded evidence and [exact validation scope](skills/motion-studio/references/validation-status.md) distinguish technical success from remaining perceptual review.
