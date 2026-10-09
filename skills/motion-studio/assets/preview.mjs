@@ -16,7 +16,7 @@ async function play(){if(playing){pause();return;}if(frame>=spec.duration_frames
  const tick=async()=>{if(!playing||token!==epoch)return;const t=cfg.audio?$('sound').currentTime:(performance.now()-start)/1000;await draw(Math.floor(t*spec.fps));if(t>=spec.duration_frames/spec.fps){pause();return;}requestAnimationFrame(tick);};requestAnimationFrame(tick);
  }catch(e){pause();report('Playback blocked: '+e.message);}
 }
-function mode(){pause();const encoded=$('mode').value==='export';$('scaled').style.display=encoded?'none':'block';$('film').style.display=encoded?'block':'none';$('show-safe').disabled=encoded;void draw(frame);}
+function mode(){pause();const encoded=$('mode').value==='export';$('scaled').style.display=encoded?'none':'block';$('film').style.display=encoded?'block':'none';$('show-safe').disabled=encoded;if(encoded){const target=frame/spec.fps;if($('film').readyState>=1)$('film').currentTime=target;else $('film').addEventListener('loadedmetadata',()=>{if($('mode').value==='export')$('film').currentTime=target;},{once:true});}void draw(frame);}
 function film(){const media=$('film');media.src=cfg.films[format];media.load();layout();}
 $('scene').addEventListener('load',async()=>{try{await $('scene').contentWindow.motionReady;ready=typeof $('scene').contentWindow.renderFrame==='function';if(!ready)throw Error('Frame function unavailable');await draw(frame);report('Ready · review observations remain pending');}catch(e){report(e.message);}});
 if(cfg.entry)$('scene').src=cfg.entry;else{$('mode').value='export';$('mode').querySelector('[value=live]').disabled=true;report('Pillow export review · live composition unavailable');}

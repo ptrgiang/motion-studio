@@ -10,7 +10,7 @@ from studio import validate
 class V14Tests(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.root=Path(self.tmp.name)/'project';self.root.mkdir();(self.root/'src').mkdir();(self.root/'assets').mkdir()
-        write(self.root/'spec.json',{'fps':30,'duration_frames':60,'audio_mode':'designed','formats':[{'id':'wide','width':960,'height':540,'safe':dict(top=20,left=20,right=20,bottom=20)}]})
+        write(self.root/'spec.json',{'fps':30,'duration_frames':60,'audio_mode':'designed','formats':[{'id':'vertical','width':540,'height':960,'safe':dict(top=20,left=20,right=20,bottom=20)},{'id':'wide','width':960,'height':540,'safe':dict(top=20,left=20,right=20,bottom=20)}]})
         write(self.root/'assets.json',{'assets':[{'id':'a','path':'assets/a.txt'}]});(self.root/'assets/a.txt').write_text('original');(self.root/'src/a.mjs').write_text('export const x=1;')
         self.fixture_run('first')
     def tearDown(self):self.tmp.cleanup()

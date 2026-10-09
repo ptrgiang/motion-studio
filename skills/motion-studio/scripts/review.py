@@ -40,6 +40,7 @@ def identity(project,run_id,current=True):
         qc=read(out/e['format']/'qc.json')
         if not qc.get('technical_pass') or not qc.get('full_decode_pass') or qc.get('film_sha256')!=e['sha256']:raise ValueError('QC does not match export')
         films[e['format']]=e['sha256']
+    if set(films)!={f['id'] for f in read(root/'spec.json')['formats']}:raise ValueError('Export formats do not match requested formats')
     return {'input_fingerprint':m['input_snapshot']['fingerprint'],'manifest_sha256':digest(out/'manifest.json'),'film_hashes':films}
 
 def init(project,run_id):
