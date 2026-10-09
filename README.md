@@ -1,6 +1,6 @@
 # Motion Studio
 
-Version **1.5.0** — real UI capture, whole-DOM rendering, shared events, procedural SFX and a 15-second app promo.
+Version **1.5.0** — dimensional craft, cut-safe temporal rendering, motion diagnostics and truthful product proof.
 
 Seven agent skills for directing, designing, engineering, and reviewing code-rendered motion films. Built for Claude Code with Opus 5.5, with portable `SKILL.md` instructions that other compatible coding agents can also use.
 
